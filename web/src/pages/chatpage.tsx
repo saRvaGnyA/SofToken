@@ -20,6 +20,8 @@ import { Web3ReactManagerReturn } from '@web3-react/core/dist/types';
 // import { Web3Storage } from "web3.storage";
 import Web3Modal from 'web3modal';
 import { ethers } from 'ethers';
+import { useRouter } from 'next/router';
+import routes from '@/config/routes';
 // import { providers, Contract } from "ethers";
 
 const sort = [
@@ -247,7 +249,7 @@ function StackedSwitch() {
 
 function Status() {
   let [status, setStatus] = useState('live');
-
+  
   return (
     <RadioGroup
       value={status}
@@ -293,6 +295,7 @@ function Status() {
 }
 
 const ChatPage: NextPageWithLayout = () => {
+  const router = useRouter()
   return (
     <>
       <NextSeo
@@ -336,6 +339,7 @@ const ChatPage: NextPageWithLayout = () => {
         </div> */}
 
         {ChatsData.map((farm) => {
+          const query = farm;
           return (
             <FarmList
               key={farm.id}
@@ -383,7 +387,7 @@ const ChatPage: NextPageWithLayout = () => {
                   UNSTAKE
                 </Button>
               </div>
-              <Button shape="rounded" fullWidth size="large">
+              <Button shape="rounded" fullWidth size="large" onClick={()=>{router.push({pathname:'/chatDm',query:query})}}>
                 HARVEST
               </Button>
             </FarmList>
