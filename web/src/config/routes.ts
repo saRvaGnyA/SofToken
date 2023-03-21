@@ -16,6 +16,7 @@ const routes = {
   createProposal: '/proposals/create',
   charts: '/charts',
   profile: '/profile',
+  chat:'/chat',
   portfolio: '/profile?view=portfolio',
   history: '/profile?view=history',
   classic: '/classic',

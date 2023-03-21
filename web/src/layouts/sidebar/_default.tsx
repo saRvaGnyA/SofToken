@@ -81,6 +81,11 @@ export const menuItems = [
     href: routes.profile,
   },
   {
+    name: ' Chat',
+    icon: <ProfileIcon />,
+    href: routes.chat,
+  },
+  {
     name: 'Vote',
     icon: <VoteIcon />,
     href: routes.vote,

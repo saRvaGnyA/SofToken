@@ -31,6 +31,7 @@ function NftFooter({
   price,
 }: NftFooterProps) {
   const { openModal } = useModal();
+  const router = useRouter();
   return (
     <div
       className={cn(
@@ -74,7 +75,7 @@ function NftFooter({
         )}
 
         <div className="grid grid-cols-2 gap-3">
-          <Button shape="rounded">
+        <Button shape="rounded" onClick={()=>{return router.push({pathname:'/profile'})}}>
             {isAuction ? 'PLACE A BID' : `BUY FOR ${price} ETH`}
           </Button>
           <Button
