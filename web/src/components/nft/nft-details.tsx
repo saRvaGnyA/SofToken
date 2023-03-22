@@ -14,6 +14,7 @@ import { useModal } from '@/components/modal-views/context';
 import { nftData } from '@/data/static/single-nft';
 import NftDropDown from './nft-dropdown';
 import Avatar from '@/components/ui/avatar';
+import { useRouter } from 'next/router';
 
 interface NftFooterProps {
   className?: string;

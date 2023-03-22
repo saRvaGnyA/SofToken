@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import type { NextPageWithLayout } from '@/types';
 import { NextSeo } from 'next-seo';
 import { motion } from 'framer-motion';
@@ -22,6 +22,8 @@ import Web3Modal from 'web3modal';
 import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import routes from '@/config/routes';
+import Chatlist from '@/components/chat/list';
+import { WalletContext } from '@/lib/hooks/use-connect';
 // import { providers, Contract } from "ethers";
 
 const sort = [
@@ -76,7 +78,7 @@ function SortList() {
 
     // actual api
     const response = await PushAPI.chat.send({
-      messageContent: "Hi Get lost!",
+      messageContent: 'Hi Get lost!',
       messageType: 'Text', // can be "Text" | "Image" | "File" | "GIF"
       receiverAddress: 'eip155:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f',
       signer: signer,
@@ -112,11 +114,11 @@ function SortList() {
 
     const conversationHash = await PushAPI.chat.conversationHash({
       account: 'eip155:0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e',
-      conversationId: 'eip155:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f' // receiver's address or chatId of a group
+      conversationId: 'eip155:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f', // receiver's address or chatId of a group
     });
-      
+
     // actual api
-    console.log(conversationHash)
+    console.log(conversationHash);
     // const chatLatest = await PushAPI.chat.latest({
     //   threadhash: conversationHash.threadHash,
     //   account: 'eip155:0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e',
@@ -129,9 +131,9 @@ function SortList() {
       account: 'eip155:0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e',
       limit: 3,
       toDecrypt: true,
-      pgpPrivateKey: pgpDecryptedPvtKey
+      pgpPrivateKey: pgpDecryptedPvtKey,
     });
-    console.log(chatHistory)
+    console.log(chatHistory);
 
     // const response = await PushAPI.chat.send({
     //   messageContent: "Gm gm! It's me... Mario",
@@ -249,7 +251,7 @@ function StackedSwitch() {
 
 function Status() {
   let [status, setStatus] = useState('live');
-  
+
   return (
     <RadioGroup
       value={status}
@@ -295,7 +297,53 @@ function Status() {
 }
 
 const ChatPage: NextPageWithLayout = () => {
-  const router = useRouter()
+  const router = useRouter();
+  const [decrypt_msg, setdecrypt_msg] = useState('');
+  const { address, disconnectWallet, balance } = useContext(WalletContext);
+  const web3Modal =
+    typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
+  const getMessage = async () => {
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const user = await PushAPI.user.get({
+      account: `eip155:${address}`,
+    });
+    console.log(user);
+    // console.log(user2.encryptedPrivateKey)
+    const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
+      encryptedPGPPrivateKey: user.encryptedPrivateKey,
+      signer: signer,
+    });
+
+    const response = await PushAPI.chat.createGroup({
+      groupName:'Push Group Chat 3',
+      groupDescription: 'This is the oficial group for Push Protocol',
+      members: ['0XB8D2A8EA54F71294F50E7088768BD96EBED17946','0XE8658DDDC779097882A0F963F2C65FACBBA51ED1'],
+      groupImage:"https://plus.unsplash.com/premium_photo-1675873627492-49be1504998c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80" ,
+      admins: ['0XCC673EE49EB916B33919294D39F0518FDC0DAF0F'],
+      isPublic: true,
+      account: `${address}`, //address of user 
+      pgpPrivateKey: pgpDecryptedPvtKey, //decrypted private key
+    });
+    console.log(response)
+    const response2 = await PushAPI.chat.getGroupByName({
+      groupName: "Push Group Chat 3"
+    });
+    console.log(response2)
+    // setdecrypt_msg(pgpDecryptedPvtKey);
+    // return pgpDecryptedPvtKey;
+
+    // const response = await PushAPI.chat.send({
+    //   messageContent: "Gm gm! It's me... Mario",
+    //   messageType: 'Text', // can be "Text" | "Image" | "File" | "GIF"
+    //   receiverAddress: `${query.to}`,
+    //   signer: signer,
+    //   pgpPrivateKey: pgpDecryptedPvtKey
+    // });
+    // console.log(`chats:${chats[0]}`);
+    // console.log(`chats req:${chatsReq}`);
+  };
   return (
     <>
       <NextSeo
@@ -319,6 +367,9 @@ const ChatPage: NextPageWithLayout = () => {
             <SortList />
           </div>
         </div>
+        <Button onClick={getMessage}>
+          New Test
+        </Button>
         {/* 
         <div className="mb-3 hidden grid-cols-3 gap-6 rounded-lg bg-white shadow-card dark:bg-light-dark sm:grid lg:grid-cols-5">
           <span className="px-8 py-6 text-sm tracking-wider text-gray-500 dark:text-gray-300">
@@ -340,8 +391,9 @@ const ChatPage: NextPageWithLayout = () => {
 
         {ChatsData.map((farm) => {
           const query = farm;
+
           return (
-            <FarmList
+            <Chatlist
               key={farm.id}
               from={farm.from}
               to={farm.to}
@@ -387,10 +439,17 @@ const ChatPage: NextPageWithLayout = () => {
                   UNSTAKE
                 </Button>
               </div>
-              <Button shape="rounded" fullWidth size="large" onClick={()=>{router.push({pathname:'/chatDm',query:query})}}>
-                HARVEST
+              <Button
+                shape="rounded"
+                fullWidth
+                size="large"
+                onClick={() => {
+                  router.push({ pathname: '/chatDm', query: query });
+                }}
+              >
+                Chat
               </Button>
-            </FarmList>
+            </Chatlist>
           );
         })}
       </div>

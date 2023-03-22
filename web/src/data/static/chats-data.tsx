@@ -2,7 +2,7 @@ export const ChatsData = [
   {
     id: 1,
     from: 'Ani',
-    to: 'ETH',
+    to: '0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f',
     earned: '0',
     apr: '29.72%',
     liquidity: '$232,941,720',
@@ -11,7 +11,7 @@ export const ChatsData = [
   {
     id: 2,
     from: 'USDT',
-    to: 'BNB',
+    to: '0xb8D2a8ea54F71294f50e7088768Bd96eBED17946',
     earned: '0',
     apr: '25.20%',
     liquidity: '$132,941,720',
@@ -20,7 +20,7 @@ export const ChatsData = [
   {
     id: 3,
     from: 'USDC',
-    to: 'DOGE',
+    to: '0xe8658Dddc779097882A0f963f2C65fACBBa51ed1',
     earned: '0',
     apr: '33.73%',
     liquidity: '$332,941,720',
@@ -29,7 +29,7 @@ export const ChatsData = [
   {
     id: 4,
     from: 'BTC',
-    to: 'ADA',
+    to: '0x0e0181444315407F1d0967CBDd5563c1c162A48f',
     earned: '0',
     apr: '10.73%',
     liquidity: '$232,941,720',
@@ -38,7 +38,7 @@ export const ChatsData = [
   {
     id: 5,
     from: 'BNB',
-    to: 'USDC',
+    to: '0x53C5bA9Cece36f4A2b47e6Bd43d8632b6aEB4295',
     earned: '0',
     apr: '20.73%',
     liquidity: '$132,941,720',
@@ -47,7 +47,7 @@ export const ChatsData = [
   {
     id: 6,
     from: 'ETH',
-    to: 'ADA',
+    to: '0x8d650ae4B5011431dd58c16cc84769D094Ddf93C',
     earned: '0',
     apr: '20.73%',
     liquidity: '$132,941,720',

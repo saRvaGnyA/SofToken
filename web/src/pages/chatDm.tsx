@@ -11,8 +11,8 @@ import Button from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { ChevronDown } from '@/components/icons/chevron-down';
 import { SearchIcon } from '@/components/icons/search';
-import FarmList from '@/components/farms/list';
-import { FarmsData } from '@/data/static/farms-data';
+import queryList from '@/components/querys/list';
+import { querysData } from '@/data/static/querys-data';
 import { ChatsData } from '@/data/static/chats-data';
 import { useWeb3React } from '@web3-react/core';
 import * as PushAPI from '@pushprotocol/restapi';
@@ -23,6 +23,7 @@ import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import { WalletContext } from '@/lib/hooks/use-connect';
 import routes from '@/config/routes';
+import Chatlist from '@/components/chat/list';
 
 const sort = [
   { id: 1, name: 'Hot' },
@@ -83,7 +84,7 @@ function Search() {
       <label className="flex w-full items-center">
         <input
           className="h-11 w-full appearance-none rounded-lg border-2 border-gray-200 bg-transparent py-1 text-sm tracking-tighter text-gray-900 outline-none transition-all placeholder:text-gray-600 focus:border-gray-900 ltr:pr-5 ltr:pl-10 rtl:pr-10 dark:border-gray-600 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-500"
-          placeholder="Search farms"
+          placeholder="Search querys"
           autoComplete="off"
         />
         <span className="pointer-events-none absolute flex h-full w-8 cursor-pointer items-center justify-center text-gray-600 hover:text-gray-900 ltr:left-0 ltr:pl-2 rtl:right-0 rtl:pr-2 dark:text-gray-500 sm:ltr:pl-3 sm:rtl:pr-3">
@@ -172,6 +173,8 @@ function Status() {
 }
 
 const ChatDm: NextPageWithLayout = () => {
+  const router = useRouter();
+  const query = router.query;
   const [chat_msgs, setchat_msgs] = useState([]);
   const [curr_msg, setcurr_msg] = useState('');
   const { address, disconnectWallet, balance } = useContext(WalletContext);
@@ -200,7 +203,7 @@ const ChatDm: NextPageWithLayout = () => {
     const response = await PushAPI.chat.send({
       messageContent: 'Hi Get lost!',
       messageType: 'Text', // can be "Text" | "Image" | "File" | "GIF"
-      receiverAddress: 'eip155:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f',
+      receiverAddress: `${query.to}`,
       signer: signer,
       pgpPrivateKey: pgpDecryptedPvtKey,
     });
@@ -215,13 +218,13 @@ const ChatDm: NextPageWithLayout = () => {
     //   const user = await PushAPI.user.create({
     //     account: '${address}'
     // });
-    const user2 = await PushAPI.user.get({
+    const user = await PushAPI.user.get({
       account: `eip155:${address}`,
     });
-    console.log(user2);
-    console.log(user2.encryptedPrivateKey);
+    console.log(user);
+    console.log(user.encryptedPrivateKey);
     const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
-      encryptedPGPPrivateKey: user2.encryptedPrivateKey,
+      encryptedPGPPrivateKey: user.encryptedPrivateKey,
       signer: signer,
     });
     console.log(curr_msg);
@@ -229,11 +232,25 @@ const ChatDm: NextPageWithLayout = () => {
     const response = await PushAPI.chat.send({
       messageContent: curr_msg,
       messageType: 'Text', // can be "Text" | "Image" | "File" | "GIF"
-      receiverAddress: 'eip155:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f',
+      receiverAddress: `${query.to}`,
       signer: signer,
       pgpPrivateKey: pgpDecryptedPvtKey,
     });
     console.log(response);
+    const conversationHash = await PushAPI.chat.conversationHash({
+      account: `eip155:${address}`,
+      conversationId: `${query.to}`, // receiver's address or chatId of a group
+    });
+    const chatHistory = await PushAPI.chat.history({
+      threadhash: conversationHash.threadHash,
+      account: `eip155:${address}`,
+      limit: 3,
+      toDecrypt: true,
+      pgpPrivateKey: pgpDecryptedPvtKey,
+    });
+    console.log(chatHistory);
+    chatHistory.reverse();
+    setchat_msgs(chatHistory);
   };
   const getMessage = async () => {
     const connection = web3Modal && (await web3Modal.connect());
@@ -250,20 +267,20 @@ const ChatDm: NextPageWithLayout = () => {
     });
 
     // actual api
-    const chats = await PushAPI.chat.chats({
-      account: `eip155:${address}`,
-      toDecrypt: true,
-      pgpPrivateKey: pgpDecryptedPvtKey,
-    });
-    const chatsReq = await PushAPI.chat.requests({
-      account: `eip155:${address}`,
-      toDecrypt: true,
-      pgpPrivateKey: pgpDecryptedPvtKey,
-    });
+    // const chats = await PushAPI.chat.chats({
+    //   account: `eip155:${address}`,
+    //   toDecrypt: true,
+    //   pgpPrivateKey: pgpDecryptedPvtKey,
+    // });
+    // const chatsReq = await PushAPI.chat.requests({
+    //   account: `eip155:${address}`,
+    //   toDecrypt: true,
+    //   pgpPrivateKey: pgpDecryptedPvtKey,
+    // });
 
     const conversationHash = await PushAPI.chat.conversationHash({
       account: `eip155:${address}`,
-      conversationId: 'eip155:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f', // receiver's address or chatId of a group
+      conversationId: `${query.to}`, // receiver's address or chatId of a group
     });
 
     // actual api
@@ -278,27 +295,29 @@ const ChatDm: NextPageWithLayout = () => {
     const chatHistory = await PushAPI.chat.history({
       threadhash: conversationHash.threadHash,
       account: `eip155:${address}`,
-      limit: 3,
+      limit: 8,
       toDecrypt: true,
       pgpPrivateKey: pgpDecryptedPvtKey,
     });
     console.log(chatHistory);
     chatHistory.reverse();
     setchat_msgs(chatHistory);
+
     // const response = await PushAPI.chat.send({
     //   messageContent: "Gm gm! It's me... Mario",
     //   messageType: 'Text', // can be "Text" | "Image" | "File" | "GIF"
-    //   receiverAddress: 'eip155:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f',
+    //   receiverAddress: `${query.to}`,
     //   signer: signer,
     //   pgpPrivateKey: pgpDecryptedPvtKey
     // });
-    console.log(`chats:${chats[0]}`);
-    console.log(`chats req:${chatsReq}`);
+    // console.log(`chats:${chats[0]}`);
+    // console.log(`chats req:${chatsReq}`);
   };
+
   return (
     <>
       <NextSeo
-        title="Farms"
+        title="querys"
         description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
       />
       <Button
@@ -306,15 +325,15 @@ const ChatDm: NextPageWithLayout = () => {
           return getMessage();
         }}
       >
-        Get
+        Load Messages
       </Button>
-      <Button
+      {/* <Button
         onClick={() => {
           return test();
         }}
       >
         Test
-      </Button>
+      </Button> */}
       <div className="mx-auto w-full sm:pt-8">
         <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center md:gap-6">
           <div className="flex items-center justify-between gap-4">
@@ -332,38 +351,70 @@ const ChatDm: NextPageWithLayout = () => {
             <SortList />
           </div>
         </div>
-        <div className="relative h-[33rem] rounded-lg bg-gray-900">
-          <div className="chat-message">
-            <div className="flex items-end justify-end">
-              <div className="order-1 mx-2 flex max-w-xs flex-col items-end space-y-2 text-xs">
-                <div>
-                  <span className="inline-block rounded-lg bg-blue-600 px-4 py-2 text-white ">
-                    Are you using sudo?
-                  </span>
-                </div>
-                {/* <div><span className="px-4 py-2 rounded-lg inline-block rounded-br-none bg-blue-600 text-white ">Run this command sudo chown -R `whoami` /Users/{{your_user_profile}}/.npm-global/ then install the package globally without using sudo</span></div> */}
+        <div className="relative h-[33rem] rounded-lg dark:bg-gray-900 bg-gray-200
+">
+          {/*  */}
+          <Chatlist
+            key={query.id}
+            from={query.from}
+            to={query.to}
+            earned={query.earned}
+            apr={query.apr}
+            liquidity={query.liquidity}
+            multiplier={query.multiplier}
+          >
+            <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6">
+              <div className="text-xs font-medium uppercase text-black ltr:text-right rtl:text-left dark:text-white sm:text-sm">
+                Wallet balance: 0
               </div>
-              {/* <img src="https://images.unsplash.com/photo-1590031905470-a1a1feacbb0b?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" className="w-6 h-6 rounded-full order-2"> */}
-            </div>
-          </div>
-          <div className="chat-message">
-            <div className="flex items-end">
-              <div className="order-2 mx-2 flex max-w-xs flex-col items-start space-y-2 text-xs">
-                <div>
-                  <span className="inline-block rounded-lg bg-gray-300 px-4 py-2 text-gray-600">
-                    It seems like you are from Mac OS world. There is no /Users/
-                    folder on linux ?
-                  </span>
-                </div>
-                {/* <div><span className="px-4 py-2 rounded-lg inline-block rounded-bl-none bg-gray-300 text-gray-600">I have no issue with any other packages installed with root permission globally.</span></div> */}
+              <div className="flex flex-col gap-3 text-xs font-medium uppercase text-black ltr:text-right rtl:text-left dark:text-white sm:text-sm">
+                <span>Your Staked: 4.208 (0.03% of pool)</span>
+                <span>0.08 WBTC + 1753.60 ETH ($18.96)</span>
               </div>
-              {/* <img src="https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&amp;ixid=eyJhcHBfaWQiOjEyMDd9&amp;auto=format&amp;fit=facearea&amp;facepad=3&amp;w=144&amp;h=144" alt="My profile" className="w-6 h-6 rounded-full order-1"> */}
+              <div className="relative">
+                <input
+                  type="number"
+                  placeholder="0.0"
+                  className="spin-button-hidden h-13 w-full appearance-none rounded-lg border-solid border-gray-200 bg-body px-4 text-sm tracking-tighter text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:shadow-none focus:outline-none focus:ring-0 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-600"
+                />
+                <span className="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-lg border border-solid bg-gray-100 px-2 py-1 text-xs uppercase text-gray-900 ltr:right-3 rtl:left-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                  Max
+                </span>
+              </div>
+              <div className="relative">
+                <input
+                  type="number"
+                  placeholder="0.0"
+                  className="spin-button-hidden h-13 w-full appearance-none rounded-lg border-solid border-gray-200 bg-body px-4 text-sm tracking-tighter text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:shadow-none focus:outline-none focus:ring-0 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-600"
+                />
+                <span className="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-lg border border-solid bg-gray-100 px-2 py-1 text-xs uppercase text-gray-900 ltr:right-3 rtl:left-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                  Max
+                </span>
+              </div>
             </div>
-          </div>
+            <div className="mb-4 grid grid-cols-2 gap-4 sm:mb-6 sm:gap-6">
+              <Button shape="rounded" fullWidth size="large">
+                STAKE
+              </Button>
+              <Button shape="rounded" fullWidth size="large">
+                UNSTAKE
+              </Button>
+            </div>
+            <Button
+              shape="rounded"
+              fullWidth
+              size="large"
+              onClick={() => {
+                router.push({ pathname: '/chatDm', query: query });
+              }}
+            >
+              Chat
+            </Button>
+          </Chatlist>
           <div className="p-2">
             {chat_msgs.map((msg) => {
-              //   const query = farm;
-              console.log(msg.fromDID.slice(7));
+              //   const query = query;
+              // console.log(msg.fromDID.slice(7),address);
 
               return address == msg.fromDID.slice(7) ? (
                 <div className="chat-message my-2">
@@ -446,7 +497,9 @@ const ChatDm: NextPageWithLayout = () => {
             ></textarea>
             <button
               type="submit"
-              onClick={sendMessage}
+              onClick={() => {
+                sendMessage();
+              }}
               className="inline-flex cursor-pointer justify-center rounded-full p-2 text-blue-600 hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600"
             >
               <svg
