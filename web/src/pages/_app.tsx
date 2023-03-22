@@ -10,6 +10,9 @@ import DrawersContainer from '@/components/drawer-views/container';
 import SettingsButton from '@/components/settings/settings-button';
 import SettingsDrawer from '@/components/settings/settings-drawer';
 import { WalletProvider } from '@/lib/hooks/use-connect';
+import { PolybaseProvider, AuthProvider } from '@polybase/react';
+import { polybase } from '../data/utils/polybase';
+
 // base css file
 import 'swiper/css';
 import '@/assets/css/scrollbar.css';
@@ -23,6 +26,7 @@ type AppPropsWithLayout = AppProps & {
 function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
   const [queryClient] = useState(() => new QueryClient());
   const getLayout = Component.getLayout ?? ((page) => page);
+
   //could remove this if you don't need to page level layout
   return (
     <>
@@ -40,13 +44,15 @@ function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
             enableSystem={false}
             defaultTheme="light"
           >
-            <WalletProvider>
-              {getLayout(<Component {...pageProps} />)}
-              <SettingsButton />
-              <SettingsDrawer />
-              <ModalsContainer />
-              <DrawersContainer />
-            </WalletProvider>
+            <PolybaseProvider polybase={polybase}>
+              <WalletProvider>
+                {getLayout(<Component {...pageProps} />)}
+                <SettingsButton />
+                <SettingsDrawer />
+                <ModalsContainer />
+                <DrawersContainer />
+              </WalletProvider>
+            </PolybaseProvider>
           </ThemeProvider>
         </Hydrate>
         <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
