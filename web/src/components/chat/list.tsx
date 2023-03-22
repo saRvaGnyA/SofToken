@@ -33,24 +33,22 @@ export default function Chatlist({
         onClick={() => setIsExpand(!isExpand)}
       >
         <div className=" text-xs font-medium uppercase tracking-wider text-black dark:text-white sm:px-8 sm:text-sm">
-          <ProfileIcon />
+          {
+            (earned=="")?<ProfileIcon />:<img className="w-10 h-10 rounded-full" src="https://plus.unsplash.com/premium_photo-1675873627492-49be1504998c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80"></img>
+          }
+          
         </div>
         
-        <div className="text-xs font-medium uppercase tracking-wider text-black dark:text-white sm:px-8 sm:text-sm">
-          {/* <span className="mb-1 block font-medium text-gray-600 dark:text-gray-400 sm:hidden">
-            Earned
-          </span> */}
-          {to}
-        </div>
-        {/* <div className="px-4 text-xs font-medium uppercase tracking-wider text-black dark:text-white sm:px-8 sm:text-sm">
+        
+        <div className="px-4 text-xs font-medium uppercase tracking-wider text-black dark:text-white sm:px-8 sm:text-sm">
           <span className="mb-1 block font-medium text-gray-600 dark:text-gray-400 sm:hidden">
             APR
           </span>
-          {apr}
+          {earned}
           <span className="hidden font-normal text-gray-600 dark:text-gray-400 sm:block">
-            Annualized
+            {to}
           </span>
-        </div> */}
+        </div>
         {/* <div className="hidden px-4 text-xs font-medium uppercase tracking-wider text-black dark:text-white sm:px-8 sm:text-sm lg:block">
           {liquidity}
         </div>

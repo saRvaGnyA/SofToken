@@ -479,7 +479,7 @@ const ChatPage: NextPageWithLayout = () => {
               key={farm.id}
               from={farm.from}
               to={farm.to}
-              earned={farm.earned}
+              earned={farm.name}
               apr={farm.apr}
               liquidity={farm.liquidity}
               multiplier={farm.multiplier}

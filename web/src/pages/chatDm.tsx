@@ -351,68 +351,65 @@ const ChatDm: NextPageWithLayout = () => {
             <SortList />
           </div>
         </div>
-        <div
-          className="relative h-[50rem] rounded-lg bg-gray-200 dark:bg-gray-900
-"
+        {/*  */}
+        <Chatlist
+          key={query.id}
+          from={query.from}
+          to={query.to}
+          earned={query.name}
+          apr={query.apr}
+          liquidity={query.liquidity}
+          multiplier={query.multiplier}
         >
-          {/*  */}
-          <Chatlist
-            key={query.id}
-            from={query.from}
-            to={query.to}
-            earned={query.earned}
-            apr={query.apr}
-            liquidity={query.liquidity}
-            multiplier={query.multiplier}
-          >
-            <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6">
-              <div className="text-xs font-medium uppercase text-black ltr:text-right rtl:text-left dark:text-white sm:text-sm">
-                Wallet balance: 0
-              </div>
-              <div className="flex flex-col gap-3 text-xs font-medium uppercase text-black ltr:text-right rtl:text-left dark:text-white sm:text-sm">
-                <span>Your Staked: 4.208 (0.03% of pool)</span>
-                <span>0.08 WBTC + 1753.60 ETH ($18.96)</span>
-              </div>
-              <div className="relative">
-                <input
-                  type="number"
-                  placeholder="0.0"
-                  className="spin-button-hidden h-13 w-full appearance-none rounded-lg border-solid border-gray-200 bg-body px-4 text-sm tracking-tighter text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:shadow-none focus:outline-none focus:ring-0 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-600"
-                />
-                <span className="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-lg border border-solid bg-gray-100 px-2 py-1 text-xs uppercase text-gray-900 ltr:right-3 rtl:left-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-                  Max
-                </span>
-              </div>
-              <div className="relative">
-                <input
-                  type="number"
-                  placeholder="0.0"
-                  className="spin-button-hidden h-13 w-full appearance-none rounded-lg border-solid border-gray-200 bg-body px-4 text-sm tracking-tighter text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:shadow-none focus:outline-none focus:ring-0 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-600"
-                />
-                <span className="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-lg border border-solid bg-gray-100 px-2 py-1 text-xs uppercase text-gray-900 ltr:right-3 rtl:left-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-                  Max
-                </span>
-              </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6">
+            <div className="text-xs font-medium uppercase text-black ltr:text-right rtl:text-left dark:text-white sm:text-sm">
+              Wallet balance: 0
             </div>
-            <div className="mb-4 grid grid-cols-2 gap-4 sm:mb-6 sm:gap-6">
-              <Button shape="rounded" fullWidth size="large">
-                STAKE
-              </Button>
-              <Button shape="rounded" fullWidth size="large">
-                UNSTAKE
-              </Button>
+            <div className="flex flex-col gap-3 text-xs font-medium uppercase text-black ltr:text-right rtl:text-left dark:text-white sm:text-sm">
+              <span>Your Staked: 4.208 (0.03% of pool)</span>
+              <span>0.08 WBTC + 1753.60 ETH ($18.96)</span>
             </div>
-            <Button
-              shape="rounded"
-              fullWidth
-              size="large"
-              onClick={() => {
-                router.push({ pathname: '/chatDm', query: query });
-              }}
-            >
-              Chat
+            <div className="relative">
+              <input
+                type="number"
+                placeholder="0.0"
+                className="spin-button-hidden h-13 w-full appearance-none rounded-lg border-solid border-gray-200 bg-body px-4 text-sm tracking-tighter text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:shadow-none focus:outline-none focus:ring-0 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-600"
+              />
+              <span className="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-lg border border-solid bg-gray-100 px-2 py-1 text-xs uppercase text-gray-900 ltr:right-3 rtl:left-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                Max
+              </span>
+            </div>
+            <div className="relative">
+              <input
+                type="number"
+                placeholder="0.0"
+                className="spin-button-hidden h-13 w-full appearance-none rounded-lg border-solid border-gray-200 bg-body px-4 text-sm tracking-tighter text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:shadow-none focus:outline-none focus:ring-0 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-600"
+              />
+              <span className="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-lg border border-solid bg-gray-100 px-2 py-1 text-xs uppercase text-gray-900 ltr:right-3 rtl:left-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                Max
+              </span>
+            </div>
+          </div>
+          <div className="mb-4 grid grid-cols-2 gap-4 sm:mb-6 sm:gap-6">
+            <Button shape="rounded" fullWidth size="large">
+              STAKE
             </Button>
-          </Chatlist>
+            <Button shape="rounded" fullWidth size="large">
+              UNSTAKE
+            </Button>
+          </div>
+          <Button
+            shape="rounded"
+            fullWidth
+            size="large"
+            onClick={() => {
+              router.push({ pathname: '/chatDm', query: query });
+            }}
+          >
+            Chat
+          </Button>
+        </Chatlist>
+        <div className="relative h-[20rem] overflow-auto  bg-gray-200 dark:bg-gray-900">
           <div className="p-2">
             {chat_msgs.map((msg) => {
               //   const query = query;
@@ -423,12 +420,14 @@ const ChatDm: NextPageWithLayout = () => {
                   <div className="flex items-end justify-end">
                     <div className="order-1 mx-2 flex max-w-xs flex-col items-end space-y-2 text-xs">
                       <div>
-                        <div className="inline-block rounded-lg bg-blue-400 pb-2 text-white ">
-                          <span className="m-1 inline-block rounded-lg bg-blue-500 p-1 text-black dark:text-white ">
+                        <div className="inline-block rounded-l-lg rounded-br-lg bg-blue-400 pb-2 text-white dark:bg-blue-800 ">
+                          <span className="m-1 inline-block rounded-l-lg rounded-br-lg p-1 text-black dark:text-white ">
                             {msg.fromDID.slice(7)}
                           </span>
                           <br></br>
-                          <span className="m-2">{msg.messageContent}</span>
+                          <span className="m-2 dark:text-gray-400">
+                            {msg.messageContent}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -439,12 +438,14 @@ const ChatDm: NextPageWithLayout = () => {
                   <div className="flex items-end">
                     <div className="order-2 mx-2 flex max-w-xs flex-col items-start space-y-2 text-xs">
                       <div>
-                        <div className="inline-block rounded-lg bg-gray-300  pb-2 text-gray-600">
-                          <span className="m-1 inline-block rounded-lg bg-gray-500 p-1 text-black dark:text-white ">
+                        <div className="inline-block rounded-r-lg rounded-bl-lg bg-gray-300 pb-2 text-gray-600 dark:bg-gray-800">
+                          <span className="m-1 inline-block rounded-r-lg rounded-bl-lg p-1 text-black dark:text-white ">
                             {msg.fromDID.slice(7)}
                           </span>
                           <br></br>
-                          <span className="m-2">{msg.messageContent}</span>
+                          <span className="m-2 dark:text-gray-400">
+                            {msg.messageContent}
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -453,77 +454,76 @@ const ChatDm: NextPageWithLayout = () => {
               );
             })}
           </div>
-
-          <label htmlFor="chat" className="sr-only">
-            Your message
-          </label>
-          <div className="absolute inset-x-0 bottom-0 flex  h-16 items-center rounded-lg bg-gray-50 px-3 py-2 dark:bg-gray-700">
-            <button
-              type="button"
-              className="inline-flex cursor-pointer justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
+        </div>
+        <label htmlFor="chat" className="sr-only ">
+          Your message
+        </label>
+        <div className=" flex h-16 w-full items-center rounded-b-lg bg-gray-50 px-3 pb-2 dark:bg-gray-700">
+          <button
+            type="button"
+            className="inline-flex cursor-pointer justify-center rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
+          >
+            <svg
+              aria-hidden="true"
+              className="h-6 w-6"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <svg
-                aria-hidden="true"
-                className="h-6 w-6"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
-                  clip-rule="evenodd"
-                ></path>
-              </svg>
-              <span className="sr-only">Upload image</span>
-            </button>
-            <button
-              type="button"
-              className="cursor-pointer rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
+              <path
+                fill-rule="evenodd"
+                d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+            <span className="sr-only">Upload image</span>
+          </button>
+          <button
+            type="button"
+            className="cursor-pointer rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white"
+          >
+            <svg
+              aria-hidden="true"
+              className="h-6 w-6"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <svg
-                aria-hidden="true"
-                className="h-6 w-6"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a1 1 0 10-1.415-1.414 3 3 0 01-4.242 0 1 1 0 00-1.415 1.414 5 5 0 007.072 0z"
-                  clip-rule="evenodd"
-                ></path>
-              </svg>
-              <span className="sr-only">Add emoji</span>
-            </button>
-            <textarea
-              id="chat"
-              rows="1"
-              onChange={(e) => {
-                setcurr_msg(e.target.value);
-              }}
-              className="mx-4 block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-              placeholder="Your message..."
-            ></textarea>
-            <button
-              type="submit"
-              onClick={() => {
-                sendMessage();
-              }}
-              className="inline-flex cursor-pointer justify-center rounded-full p-2 text-blue-600 hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600"
+              <path
+                fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 100-2 1 1 0 000 2zm7-1a1 1 0 11-2 0 1 1 0 012 0zm-.464 5.535a1 1 0 10-1.415-1.414 3 3 0 01-4.242 0 1 1 0 00-1.415 1.414 5 5 0 007.072 0z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+            <span className="sr-only">Add emoji</span>
+          </button>
+          <textarea
+            id="chat"
+            rows="1"
+            onChange={(e) => {
+              setcurr_msg(e.target.value);
+            }}
+            className="mx-4 block w-full rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+            placeholder="Your message..."
+          ></textarea>
+          <button
+            type="submit"
+            onClick={() => {
+              sendMessage();
+            }}
+            className="inline-flex cursor-pointer justify-center rounded-full p-2 text-blue-600 hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600"
+          >
+            <svg
+              aria-hidden="true"
+              className="h-6 w-6 rotate-90"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <svg
-                aria-hidden="true"
-                className="h-6 w-6 rotate-90"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
-              </svg>
-              <span className="sr-only">Send message</span>
-            </button>
-          </div>
+              <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+            </svg>
+            <span className="sr-only">Send message</span>
+          </button>
         </div>
       </div>
     </>
