@@ -1,6 +1,8 @@
 import { useEffect, useState, createContext, ReactNode } from 'react';
 import Web3Modal from 'web3modal';
 import { ethers } from 'ethers';
+import { polybase } from '../../data/utils/polybase';
+import Router from 'next/router';
 
 const web3modalStorageKey = 'WEB3_CONNECT_CACHED_PROVIDER';
 
@@ -77,9 +79,29 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       const connection = web3Modal && (await web3Modal.connect());
       const provider = new ethers.providers.Web3Provider(connection);
       await subscribeProvider(connection);
-
       setWalletAddress(provider);
       setLoading(false);
+
+      const signer = provider.getSigner();
+      const wAddress = await signer.getAddress();
+      polybase.signer(async (data: string) => {
+        const sig = await provider.send('personal_sign', [
+          ethers.utils.hexlify(ethers.utils.toUtf8Bytes(data)),
+          wAddress.toLowerCase(),
+        ]);
+
+        return { h: 'eth-personal-sign', sig };
+      });
+
+      const collectionReference = polybase.collection('User');
+
+      const records = await collectionReference
+        .where('publicKey', '==', wAddress)
+        .get();
+
+      if (records.data.length === 0) {
+        Router.push('/profile');
+      }
     } catch (error) {
       setLoading(false);
       console.log(
