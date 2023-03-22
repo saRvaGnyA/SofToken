@@ -360,7 +360,7 @@ const ChatPage: NextPageWithLayout = () => {
     //   account: `${address}`,
     //   senderAddress : `${response3.chatId}` // receiver's address or chatId of a group
     // })
-    
+
     // console.log(response4);
     // console.log(response5);
     // setdecrypt_msg(pgpDecryptedPvtKey);
@@ -375,6 +375,91 @@ const ChatPage: NextPageWithLayout = () => {
     // });
     // console.log(`chats:${chats[0]}`);
     // console.log(`chats req:${chatsReq}`);
+  };
+  const checkNotif = async () => {
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const user = await PushAPI.user.get({
+      account: `eip155:${address}`,
+    });
+    console.log(user);
+    // console.log(user2.encryptedPrivateKey)
+    // const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
+    //   encryptedPGPPrivateKey: user.encryptedPrivateKey,
+    //   signer: signer,
+    // });
+    await PushAPI.channels.subscribe({
+      signer: signer,
+      channelAddress: 'eip155:5:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f', // channel address in CAIP
+      userAddress: `eip155:5:${address}`, // user address in CAIP
+      onSuccess: () => {
+        console.log('opt in success');
+      },
+      onError: () => {
+        console.error('opt in error');
+      },
+      env: 'staging',
+    });
+    console.log('subscriptions');
+  };
+  const sendNotif = async () => {
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const user = await PushAPI.user.get({
+      account: `eip155:${address}`,
+    });
+    console.log(user);
+    // console.log(user2.encryptedPrivateKey)
+    // const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
+    //   encryptedPGPPrivateKey: user.encryptedPrivateKey,
+    //   signer: signer,
+    // });
+    const apiResponse = await PushAPI.payloads.sendNotification({
+      signer: signer,
+      type: 3, // target
+      identityType: 2, // direct payload
+      notification: {
+        title: `This is title of ur new notif`,
+        body: `Hello how are you?`,
+      },
+      payload: {
+        title: `[sdk-test] payload title`,
+        body: `sample msg body`,
+        cta: '',
+        img: '',
+      },
+      recipients: `eip155:5:0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e`, // recipient address
+      channel: `eip155:5:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f`, // your channel address
+      env: "staging",
+    });
+    // const parsedResults = PushAPI.utils.parseApiResponse(apiResponse);
+
+    // const [oneNotification] = parsedResults;
+    console.log(apiResponse);
+    
+  };
+  const getNotif = async () => {
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const user = await PushAPI.user.get({
+      account: `eip155:${address}`,
+    });
+    console.log(user);
+    // console.log(user2.encryptedPrivateKey)
+    // const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
+    //   encryptedPGPPrivateKey: user.encryptedPrivateKey,
+    //   signer: signer,
+    // });
+    const notifications = await PushAPI.user.getFeeds({
+      user: `eip155:5:${address}`, // user address in CAIP
+      env: 'staging',
+      
+    });
+    console.log(notifications);
+    
   };
   return (
     <>
@@ -394,8 +479,7 @@ const ChatPage: NextPageWithLayout = () => {
                 value="live"
                 onClick={() => {
                   console.log('hey dms!!');
-                  setlistOfMsgs(ChatsData)
-
+                  setlistOfMsgs(ChatsData);
                 }}
               >
                 {({ checked }) => (
@@ -418,7 +502,7 @@ const ChatPage: NextPageWithLayout = () => {
                 value="finished"
                 onClick={() => {
                   console.log('hey grps!!');
-                  setlistOfMsgs(GrpsData)
+                  setlistOfMsgs(GrpsData);
                 }}
               >
                 {({ checked }) => (
@@ -452,6 +536,9 @@ const ChatPage: NextPageWithLayout = () => {
           </div>
         </div>
         <Button onClick={getMessage}>New Test</Button>
+        <Button onClick={checkNotif}>Notif</Button>
+        <Button onClick={sendNotif}>Send Notif</Button>
+        <Button onClick={getNotif}>Get Notif</Button>
         {/* 
         <div className="mb-3 hidden grid-cols-3 gap-6 rounded-lg bg-white shadow-card dark:bg-light-dark sm:grid lg:grid-cols-5">
           <span className="px-8 py-6 text-sm tracking-wider text-gray-500 dark:text-gray-300">

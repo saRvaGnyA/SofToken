@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import cn from 'classnames';
 import { useWindowScroll } from '@/lib/hooks/use-window-scroll';
 import { FlashIcon } from '@/components/icons/flash';
@@ -10,15 +10,56 @@ import { useDrawer } from '@/components/drawer-views/context';
 // import Sidebar from '@/layouts/dashboard/_sidebar';
 import Sidebar from '@/layouts/sidebar/_default';
 import WalletConnect from '@/components/nft/wallet-connect';
-
+import { useRouter } from 'next/router';
+import { WalletContext } from '@/lib/hooks/use-connect';
+import { ethers } from 'ethers';
+import * as PushAPI from '@pushprotocol/restapi';
+import Web3Modal from 'web3modal';
 function NotificationButton() {
+  const router = useRouter();
+  const { address, disconnectWallet, balance } = useContext(WalletContext);
+  const web3Modal =
+    typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
+  const getNotif = async () => {
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const user = await PushAPI.user.get({
+      account: `eip155:${address}`,
+    });
+    console.log(user);
+    // console.log(user2.encryptedPrivateKey)
+    // const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
+    //   encryptedPGPPrivateKey: user.encryptedPrivateKey,
+    //   signer: signer,
+    // });
+    const notifications = await PushAPI.user.getFeeds({
+      user: `eip155:5:${address}`, // user address in CAIP
+      env: 'staging',
+      
+    });
+    console.log(notifications);
+    return notifications
+    
+  };
   return (
-    <ActiveLink href="/notifications">
-      <div className="relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-brand shadow-main transition-all hover:-translate-y-0.5 hover:shadow-large focus:-translate-y-0.5 focus:shadow-large focus:outline-none dark:border-gray-700 dark:bg-light-dark dark:text-white sm:h-12 sm:w-12">
+    // <ActiveLink >
+    <div
+      onClick={async() => {
+        console.log('Hey there!');
+        const notifs = await getNotif();
+        const data = {
+          title:notifs.notification.title,
+          body:notifs.notification.body,
+
+        }
+        router.push({ pathname: '/notifications' ,query:data});
+      }}
+      className="relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-brand shadow-main transition-all hover:-translate-y-0.5 hover:shadow-large focus:-translate-y-0.5 focus:shadow-large focus:outline-none dark:border-gray-700 dark:bg-light-dark dark:text-white sm:h-12 sm:w-12">
         <FlashIcon className="h-auto w-3 sm:w-auto" />
         <span className="absolute top-0 right-0 h-2.5 w-2.5 rounded-full bg-brand shadow-light sm:h-3 sm:w-3" />
       </div>
-    </ActiveLink>
+   
   );
 }
 
