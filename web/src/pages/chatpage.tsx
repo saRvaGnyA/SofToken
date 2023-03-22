@@ -24,6 +24,7 @@ import { useRouter } from 'next/router';
 import routes from '@/config/routes';
 import Chatlist from '@/components/chat/list';
 import { WalletContext } from '@/lib/hooks/use-connect';
+import { GrpsData } from '@/data/static/grps-data';
 // import { providers, Contract } from "ethers";
 
 const sort = [
@@ -258,7 +259,12 @@ function Status() {
       onChange={setStatus}
       className="flex items-center sm:gap-3"
     >
-      <RadioGroup.Option value="live">
+      <RadioGroup.Option
+        value="live"
+        onClick={() => {
+          console.log('hey dms!!');
+        }}
+      >
         {({ checked }) => (
           <span
             className={`relative flex h-11 w-20 cursor-pointer items-center justify-center rounded-lg text-center text-xs font-medium tracking-wider sm:w-24 sm:text-sm ${
@@ -271,11 +277,16 @@ function Status() {
                 layoutId="statusIndicator"
               />
             )}
-            <span className="relative">LIVE</span>
+            <span className="relative">DMs</span>
           </span>
         )}
       </RadioGroup.Option>
-      <RadioGroup.Option value="finished">
+      <RadioGroup.Option
+        value="finished"
+        onClick={() => {
+          console.log('hey grps!!');
+        }}
+      >
         {({ checked }) => (
           <span
             className={`relative flex h-11 w-20 cursor-pointer items-center justify-center rounded-lg text-center text-xs font-medium tracking-wider sm:w-24 sm:text-sm ${
@@ -288,7 +299,7 @@ function Status() {
                 layoutId="statusIndicator"
               />
             )}
-            <span className="relative">FINISHED</span>
+            <span className="relative">Groups</span>
           </span>
         )}
       </RadioGroup.Option>
@@ -298,7 +309,10 @@ function Status() {
 
 const ChatPage: NextPageWithLayout = () => {
   const router = useRouter();
+  let [status, setStatus] = useState('live');
+
   const [decrypt_msg, setdecrypt_msg] = useState('');
+  const [listOfMsgs, setlistOfMsgs] = useState(ChatsData);
   const { address, disconnectWallet, balance } = useContext(WalletContext);
   const web3Modal =
     typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
@@ -316,21 +330,39 @@ const ChatPage: NextPageWithLayout = () => {
       signer: signer,
     });
 
-    const response = await PushAPI.chat.createGroup({
-      groupName:'Push Group Chat 3',
-      groupDescription: 'This is the oficial group for Push Protocol',
-      members: ['0XB8D2A8EA54F71294F50E7088768BD96EBED17946','0XE8658DDDC779097882A0F963F2C65FACBBA51ED1'],
-      groupImage:"https://plus.unsplash.com/premium_photo-1675873627492-49be1504998c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80" ,
-      admins: ['0XCC673EE49EB916B33919294D39F0518FDC0DAF0F'],
-      isPublic: true,
-      account: `${address}`, //address of user 
-      pgpPrivateKey: pgpDecryptedPvtKey, //decrypted private key
-    });
-    console.log(response)
+    // const response = await PushAPI.chat.createGroup({
+    //   account: `${address}`, //address of user
+    //   groupName: 'EthGlobal NFT',
+    //   groupDescription: 'This is the oficial group for Push Protocol',
+    //   members: ['0xC7cc983FCD339B1020a48D6f473a5DE663461148'],
+    //   groupImage:
+    //     'https://plus.unsplash.com/premium_photo-1675873627492-49be1504998c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80',
+    //   admins: ['0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f'],
+    //   isPublic: true,
+    //   pgpPrivateKey: pgpDecryptedPvtKey, //decrypted private key
+    // });
+    // console.log(response);
     const response2 = await PushAPI.chat.getGroupByName({
-      groupName: "Push Group Chat 3"
+      groupName: 'Ani NFT',
     });
-    console.log(response2)
+    console.log(response2);
+    const response3 = await PushAPI.chat.getGroupByName({
+      groupName: 'EthGlobal NFT',
+    });
+    console.log(response3);
+    // const response4 = await PushAPI.chat.approve({
+    //   status: 'Approved',
+    //   account: `${address}`,
+    //   senderAddress : `${response2.chatId}` // receiver's address or chatId of a group
+    // })
+    // const response5 = await PushAPI.chat.approve({
+    //   status: 'Approved',
+    //   account: `${address}`,
+    //   senderAddress : `${response3.chatId}` // receiver's address or chatId of a group
+    // })
+    
+    // console.log(response4);
+    // console.log(response5);
     // setdecrypt_msg(pgpDecryptedPvtKey);
     // return pgpDecryptedPvtKey;
 
@@ -353,7 +385,59 @@ const ChatPage: NextPageWithLayout = () => {
       <div className="mx-auto w-full sm:pt-8">
         <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center md:gap-6">
           <div className="flex items-center justify-between gap-4">
-            <Status />
+            <RadioGroup
+              value={status}
+              onChange={setStatus}
+              className="flex items-center sm:gap-3"
+            >
+              <RadioGroup.Option
+                value="live"
+                onClick={() => {
+                  console.log('hey dms!!');
+                  setlistOfMsgs(ChatsData)
+
+                }}
+              >
+                {({ checked }) => (
+                  <span
+                    className={`relative flex h-11 w-20 cursor-pointer items-center justify-center rounded-lg text-center text-xs font-medium tracking-wider sm:w-24 sm:text-sm ${
+                      checked ? 'text-white' : 'text-brand'
+                    }`}
+                  >
+                    {checked && (
+                      <motion.span
+                        className="absolute bottom-0 left-0 right-0 h-full w-full rounded-lg bg-brand shadow-large"
+                        layoutId="statusIndicator"
+                      />
+                    )}
+                    <span className="relative">DMs</span>
+                  </span>
+                )}
+              </RadioGroup.Option>
+              <RadioGroup.Option
+                value="finished"
+                onClick={() => {
+                  console.log('hey grps!!');
+                  setlistOfMsgs(GrpsData)
+                }}
+              >
+                {({ checked }) => (
+                  <span
+                    className={`relative flex h-11 w-20 cursor-pointer items-center justify-center rounded-lg text-center text-xs font-medium tracking-wider sm:w-24 sm:text-sm ${
+                      checked ? 'text-white' : 'text-brand'
+                    }`}
+                  >
+                    {checked && (
+                      <motion.span
+                        className="absolute bottom-0 left-0 right-0 h-full w-full rounded-lg bg-brand shadow-large"
+                        layoutId="statusIndicator"
+                      />
+                    )}
+                    <span className="relative">Groups</span>
+                  </span>
+                )}
+              </RadioGroup.Option>
+            </RadioGroup>
             <div className="md:hidden">
               <StackedSwitch />
             </div>
@@ -367,9 +451,7 @@ const ChatPage: NextPageWithLayout = () => {
             <SortList />
           </div>
         </div>
-        <Button onClick={getMessage}>
-          New Test
-        </Button>
+        <Button onClick={getMessage}>New Test</Button>
         {/* 
         <div className="mb-3 hidden grid-cols-3 gap-6 rounded-lg bg-white shadow-card dark:bg-light-dark sm:grid lg:grid-cols-5">
           <span className="px-8 py-6 text-sm tracking-wider text-gray-500 dark:text-gray-300">
@@ -389,7 +471,7 @@ const ChatPage: NextPageWithLayout = () => {
           </span>
         </div> */}
 
-        {ChatsData.map((farm) => {
+        {listOfMsgs.map((farm) => {
           const query = farm;
 
           return (

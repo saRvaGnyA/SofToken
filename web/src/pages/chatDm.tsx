@@ -244,7 +244,7 @@ const ChatDm: NextPageWithLayout = () => {
     const chatHistory = await PushAPI.chat.history({
       threadhash: conversationHash.threadHash,
       account: `eip155:${address}`,
-      limit: 3,
+      limit: 6,
       toDecrypt: true,
       pgpPrivateKey: pgpDecryptedPvtKey,
     });
@@ -295,7 +295,7 @@ const ChatDm: NextPageWithLayout = () => {
     const chatHistory = await PushAPI.chat.history({
       threadhash: conversationHash.threadHash,
       account: `eip155:${address}`,
-      limit: 8,
+      limit: 6,
       toDecrypt: true,
       pgpPrivateKey: pgpDecryptedPvtKey,
     });
@@ -351,8 +351,10 @@ const ChatDm: NextPageWithLayout = () => {
             <SortList />
           </div>
         </div>
-        <div className="relative h-[33rem] rounded-lg dark:bg-gray-900 bg-gray-200
-">
+        <div
+          className="relative h-[50rem] rounded-lg bg-gray-200 dark:bg-gray-900
+"
+        >
           {/*  */}
           <Chatlist
             key={query.id}
@@ -414,15 +416,19 @@ const ChatDm: NextPageWithLayout = () => {
           <div className="p-2">
             {chat_msgs.map((msg) => {
               //   const query = query;
-              // console.log(msg.fromDID.slice(7),address);
+              console.log(msg.fromDID.slice(7), address);
 
-              return address == msg.fromDID.slice(7) ? (
+              return address.toString() == msg.fromDID.slice(7).toString() ? (
                 <div className="chat-message my-2">
                   <div className="flex items-end justify-end">
                     <div className="order-1 mx-2 flex max-w-xs flex-col items-end space-y-2 text-xs">
                       <div>
-                        <div className="inline-block rounded-lg bg-blue-600 px-4 py-2 text-white ">
-                          {msg.messageContent}
+                        <div className="inline-block rounded-lg bg-blue-400 pb-2 text-white ">
+                          <span className="m-1 inline-block rounded-lg bg-blue-500 p-1 text-black dark:text-white ">
+                            {msg.fromDID.slice(7)}
+                          </span>
+                          <br></br>
+                          <span className="m-2">{msg.messageContent}</span>
                         </div>
                       </div>
                     </div>
@@ -433,9 +439,13 @@ const ChatDm: NextPageWithLayout = () => {
                   <div className="flex items-end">
                     <div className="order-2 mx-2 flex max-w-xs flex-col items-start space-y-2 text-xs">
                       <div>
-                        <span className="inline-block rounded-lg bg-gray-300 px-4 py-2 text-gray-600">
-                          {msg.messageContent}
-                        </span>
+                        <div className="inline-block rounded-lg bg-gray-300  pb-2 text-gray-600">
+                          <span className="m-1 inline-block rounded-lg bg-gray-500 p-1 text-black dark:text-white ">
+                            {msg.fromDID.slice(7)}
+                          </span>
+                          <br></br>
+                          <span className="m-2">{msg.messageContent}</span>
+                        </div>
                       </div>
                     </div>
                   </div>
