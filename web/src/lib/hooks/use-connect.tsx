@@ -19,6 +19,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [isProfileComplete, setIsProfileComplete] = useState<boolean>(false);
+  const [recordGlobal, setRecordGlobal] = useState({});
   const web3Modal =
     typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
 
@@ -65,7 +66,12 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
 
   const disconnectWallet = () => {
     setAddress(undefined);
+    setName('');
+    setUsername('');
+    setProfilePicCid(undefined);
+    setIsProfileComplete(false);
     web3Modal && web3Modal.clearCachedProvider();
+    Router.push('/');
   };
 
   const checkIfExtensionIsAvailable = () => {
@@ -104,11 +110,12 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       const records = await collectionReference
         .where('id', '==', wAddress)
         .get();
-        
-        if (records.data.length === 0) {
-          Router.push('/update-profile');
-        } else {
+
+      if (records.data.length === 0) {
+        Router.push('/update-profile');
+      } else {
         const record = records.data[0].data;
+        setRecordGlobal(record);
         setProfilePicCid(record.profilePic);
         setUsername(record.username);
         setName(record.name);
@@ -151,6 +158,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
         setUsername,
         name,
         setName,
+        recordGlobal,
         profilePicCid,
         setProfilePicCid,
         connectToWallet,
