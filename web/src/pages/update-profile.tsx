@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import type { NextPageWithLayout } from '@/types';
 import cn from 'classnames';
 import { NextSeo } from 'next-seo';
@@ -24,15 +24,21 @@ import { OptionIcon } from '@/components/icons/option';
 import { Verified } from '@/components/icons/verified';
 import Avatar from '@/components/ui/avatar';
 import { WalletContext } from '@/lib/hooks/use-connect';
+import { polybase } from '../data/utils/polybase';
+import { Web3Storage } from 'web3.storage';
+import Router from 'next/router';
+
 //images
 import AuthorImage from '@/assets/images/author.jpg';
 import NFT1 from '@/assets/images/nft/nft-1.jpg';
 
 const UpdateProfilePage: NextPageWithLayout = () => {
-  let [explicit, setExplicit] = useState(false);
-  let [unlocked, setUnlocked] = useState(false);
+  const [profilePic, setProfilePic] = useState([]);
+  const [profilePreview, setProfilePreview] = useState([]);
+  const [coverPic, setCoverPic] = useState([]);
   const [termsAgree, setTermsAgree] = useState(false);
   const [bio, setBio] = useState('');
+  const collectionReference = polybase.collection('User');
   const {
     address,
     balance,
@@ -46,48 +52,115 @@ const UpdateProfilePage: NextPageWithLayout = () => {
     setIsProfileComplete,
   } = useContext(WalletContext);
 
+  function makeStorageClient() {
+    return new Web3Storage({ token: process.env.NEXT_PUBLIC_FILECOIN_API_KEY });
+  }
+
+  const initialDataLoad = async () => {
+    const { data } = await collectionReference.where('id', '==', address).get();
+    console.log(data[0].data);
+    const record = data[0].data;
+    setBio(record.bio);
+    setName(record.name);
+    setUsername(record.username);
+
+    const client = makeStorageClient();
+    const res = await client.get(profilePicCid);
+
+    // unpack File objects from the response
+    const files = await res?.files();
+    setProfilePreview(
+      files?.map((file: any) =>
+        Object.assign(file, {
+          preview: URL.createObjectURL(file),
+        })
+      )
+    );
+  };
+
+  useEffect(() => {
+    if (isProfileComplete) {
+      initialDataLoad();
+    }
+  }, [isProfileComplete]);
+
+  const submitHandler = async () => {
+    const timestamp = Date.now().toString();
+    const client = makeStorageClient();
+    const pfPicCid = await client.put(profilePic);
+    const coverPicCid = await client.put(coverPic);
+    const userData = await collectionReference.create([
+      address,
+      timestamp,
+      username,
+      name,
+      bio,
+      coverPicCid,
+      pfPicCid,
+    ]);
+    setProfilePicCid(pfPicCid);
+    setIsProfileComplete(true);
+    Router.push('/profile');
+  };
+
+  const updateHandler = async () => {
+    const client = makeStorageClient();
+    let pfPicCid = '';
+    let coverPicCid = '';
+    if (profilePic.length > 0) {
+      pfPicCid = await client.put(profilePic);
+    }
+    if (coverPic.length > 0) {
+      coverPicCid = await client.put(coverPic);
+    }
+    await collectionReference
+      .record(address)
+      .call('updateDetails', [name, bio, pfPicCid, coverPicCid]);
+    Router.push('/profile');
+  };
+
   return (
     <>
-      <NextSeo title="Update Profile Details" description="SofToken" />
+      <NextSeo
+        title={isProfileComplete ? 'Update Profile Details' : 'Create Profile'}
+        description="SofToken"
+      />
       <div className="mx-auto w-full px-4 pt-8 pb-14 sm:px-6 sm:pb-20 sm:pt-12 lg:px-8 xl:px-10 2xl:px-0">
         <h2 className="mb-6 text-lg font-medium uppercase tracking-wider text-gray-900 dark:text-white sm:mb-10 sm:text-2xl">
-          Update Profile Details
+          {isProfileComplete ? 'Update Profile Details' : 'Create Profile'}
         </h2>
         <div className="mb-8 grid grid-cols-1 gap-12 lg:grid-cols-3">
           <div className="lg:col-span-2">
             {/* File uploader */}
             <div className="mb-8">
               <InputLabel title="Upload Cover Photo" important />
-              <Uploader />
+              <Uploader files={coverPic} setFiles={setCoverPic} />
             </div>
 
             {/* File uploader */}
             <div className="mb-8">
               <InputLabel title="Upload Profile Photo" important />
-              <Uploader />
+              <Uploader files={profilePic} setFiles={setProfilePic} />
             </div>
           </div>
 
           <div className="hidden flex-col lg:flex">
-            {/* NFT preview */}
-            <InputLabel title="Preview" />
+            {/* Profile preview */}
+            <InputLabel title="Profile Preview" />
             <div className="relative flex flex-grow flex-col overflow-hidden rounded-lg bg-white shadow-card transition-all duration-200 hover:shadow-large dark:bg-light-dark">
               <div className="flex items-center p-4 text-sm font-medium text-gray-600 transition hover:text-gray-900 dark:text-gray-400">
-                <Avatar
-                  size="sm"
-                  image={AuthorImage}
-                  alt="Cameronwilliamson"
-                  className="border-white bg-gray-300 ltr:mr-3 rtl:ml-3 dark:bg-gray-400"
-                />
                 @{username || 'Your Username'}
               </div>
               <div className="relative block w-full pb-full">
                 <Image
-                  src={NFT1}
-                  placeholder="blur"
+                  src={
+                    profilePic[0]?.preview ||
+                    profilePreview[0]?.preview ||
+                    AuthorImage
+                  }
                   layout="fill"
                   objectFit="cover"
-                  alt="Pulses of Imagination #214"
+                  alt="Uploaded Profile Pic"
                 />
               </div>
               <div className="p-5">
@@ -149,18 +222,24 @@ const UpdateProfilePage: NextPageWithLayout = () => {
         </div>
 
         {/* Agree to Terms */}
-        <div className="mb-8">
-          <ToggleBar
-            title="Agree to Terms"
-            subTitle="I agree to the terms and conditions of this NFT Marketplace"
-            icon={<Verified />}
-            checked={termsAgree}
-            onChange={() => setTermsAgree(!termsAgree)}
-          />
-        </div>
+        {!isProfileComplete && (
+          <div className="mb-8">
+            <ToggleBar
+              title="Agree to Terms"
+              subTitle="I agree to the terms and conditions of SofToken NFT Marketplace"
+              icon={<Verified />}
+              checked={termsAgree}
+              onChange={() => setTermsAgree(!termsAgree)}
+            />
+          </div>
+        )}
 
-        <Button disabled={!termsAgree} shape="rounded">
-          CREATE
+        <Button
+          onClick={isProfileComplete ? updateHandler : submitHandler}
+          disabled={isProfileComplete ? false : !termsAgree}
+          shape="rounded"
+        >
+          {isProfileComplete ? 'UPDATE' : 'CREATE'}
         </Button>
       </div>
     </>

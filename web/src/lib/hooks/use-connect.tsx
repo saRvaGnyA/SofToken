@@ -102,12 +102,16 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       const collectionReference = polybase.collection('User');
 
       const records = await collectionReference
-        .where('publicKey', '==', wAddress)
+        .where('id', '==', wAddress)
         .get();
-
-      if (records.data.length === 0) {
-        Router.push('/update-profile');
-      } else {
+        
+        if (records.data.length === 0) {
+          Router.push('/update-profile');
+        } else {
+        const record = records.data[0].data;
+        setProfilePicCid(record.profilePic);
+        setUsername(record.username);
+        setName(record.name);
         setIsProfileComplete(true);
       }
     } catch (error) {

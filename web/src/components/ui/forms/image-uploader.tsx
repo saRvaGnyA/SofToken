@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Button from '@/components/ui/button';
 
-function Uploader() {
-  const [files, setFiles] = useState([]);
+function Uploader({ files, setFiles }) {
   const { getRootProps, getInputProps } = useDropzone({
     accept: 'image/*',
     multiple: false,
@@ -24,7 +23,7 @@ function Uploader() {
       <img
         src={file.preview}
         className="mx-auto max-h-full max-w-full object-contain"
-        alt="uploaded image"
+        alt={`Uploaded ${file.name}`}
       />
     </div>
   ));
@@ -45,7 +44,7 @@ function Uploader() {
         })}
       >
         <input {...getInputProps()} />
-        {files.length > 0 ? (
+        {files.length > 0 && files[0].preview ? (
           thumbs
         ) : (
           <div className="text-center">
