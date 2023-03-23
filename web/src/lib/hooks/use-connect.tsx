@@ -11,8 +11,14 @@ export const WalletContext = createContext<any>({});
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
   const [address, setAddress] = useState<string | undefined>(undefined);
   const [balance, setBalance] = useState<string | undefined>(undefined);
+  const [username, setUsername] = useState<string>('');
+  const [name, setName] = useState<string>('');
+  const [profilePicCid, setProfilePicCid] = useState<string | undefined>(
+    undefined
+  );
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
+  const [isProfileComplete, setIsProfileComplete] = useState<boolean>(false);
   const web3Modal =
     typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
 
@@ -96,11 +102,17 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       const collectionReference = polybase.collection('User');
 
       const records = await collectionReference
-        .where('publicKey', '==', wAddress)
+        .where('id', '==', wAddress)
         .get();
-
-      if (records.data.length === 0) {
-        Router.push('/profile');
+        
+        if (records.data.length === 0) {
+          Router.push('/update-profile');
+        } else {
+        const record = records.data[0].data;
+        setProfilePicCid(record.profilePic);
+        setUsername(record.username);
+        setName(record.name);
+        setIsProfileComplete(true);
       }
     } catch (error) {
       setLoading(false);
@@ -133,6 +145,14 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
         balance,
         loading,
         error,
+        isProfileComplete,
+        setIsProfileComplete,
+        username,
+        setUsername,
+        name,
+        setName,
+        profilePicCid,
+        setProfilePicCid,
         connectToWallet,
         disconnectWallet,
       }}
