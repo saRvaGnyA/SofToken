@@ -9,30 +9,30 @@ type actor = {
 };
 
 export interface NotificationCardProps {
-  type: notificationType;
-  actor: actor;
-  time: string;
-  url: string;
-  notifier: string;
+  // tit: notificationType;
+  // actor: actor;
+  // time: string;
+  id:string;
+  body: string;
+  title: string;
 }
 
 export default function NotificationCard({
-  type,
-  actor,
-  time,
-  url,
-  notifier,
+  title,
+  body,
+  id
+
 }: NotificationCardProps) {
   return (
     <AnchorLink
-      href={url}
+      href="/"
       className="mb-4 flex items-center rounded-lg bg-white p-4 shadow-card transition-all duration-200 last:mb-0 hover:-translate-y-0.5 hover:shadow-large dark:bg-light-dark sm:mb-5 sm:p-5"
     >
       <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-full sm:h-12 sm:w-12">
-        <Image
-          src={actor.avatar}
-          alt={actor.name}
-          placeholder="blur"
+        <img
+          src="https://easydrawingguides.com/wp-content/uploads/2022/02/realistic-rose-flower-step-by-step-drawing-tutorial-step-10.png"
+          // alt={actor.name}
+          // placeholder="blur"
           layout="fill"
           objectFit="cover"
         />
@@ -40,12 +40,13 @@ export default function NotificationCard({
       <div className="ltr:ml-3 rtl:mr-3 ltr:sm:ml-4 rtl:sm:mr-4">
         <div className="text-xs tracking-tighter text-gray-600 dark:text-gray-400 sm:text-sm">
           <span className="font-medium text-gray-900 ltr:mr-2 rtl:ml-2 dark:text-white">
-            @{actor.name}
+            @{id} 
+            {/* name */}
           </span>
-          {type} {notifier}
+           {title}
         </div>
         <div className="mt-1 text-xs tracking-tighter text-gray-600 dark:text-gray-400 sm:text-sm">
-          {time}
+          {body}
         </div>
       </div>
     </AnchorLink>

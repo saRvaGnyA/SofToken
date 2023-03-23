@@ -14,55 +14,95 @@ import User3 from '@/assets/images/avatar/10.jpg';
 import User4 from '@/assets/images/avatar/11.jpg';
 import Image from '@/components/ui/image';
 import { url } from 'inspector';
+import { useContext, useEffect, useState } from 'react';
+import WalletConnect from '@/components/nft/wallet-connect';
+import { useRouter } from 'next/router';
+import { WalletContext } from '@/lib/hooks/use-connect';
+import { ethers } from 'ethers';
+import * as PushAPI from '@pushprotocol/restapi';
+import Web3Modal from 'web3modal';
 
-const notifications = [
-  {
-    id: 1,
-    type: 'followed',
-    actor: {
-      name: 'dolcemariposa',
-      avatar: User1,
-    },
-    time: 'Just Now',
-    url: '#',
-    notifier: 'you',
-  },
-  {
-    id: 2,
-    type: 'liked',
-    actor: {
-      name: 'pimptronot',
-      avatar: User2,
-    },
-    time: '10 minutes ago',
-    url: '#',
-    notifier: 'Cryppo #1491',
-  },
-  {
-    id: 3,
-    type: 'purchased',
-    actor: {
-      name: 'centralgold',
-      avatar: User3,
-    },
-    time: '20 minutes ago',
-    url: '#',
-    notifier: 'Pepe mfer #16241',
-  },
-  {
-    id: 4,
-    type: 'followed',
-    actor: {
-      name: 'theline',
-      avatar: User4,
-    },
-    time: '30 minutes ago',
-    url: '#',
-    notifier: 'you',
-  },
-];
+// const notifications = [
+//   {
+//     id: 1,
+//     type: 'followed',
+//     actor: {
+//       name: 'dolcemariposa',
+//       avatar: User1,
+//     },
+//     time: 'Just Now',
+//     url: '#',
+//     notifier: 'you',
+//   },
+//   {
+//     id: 2,
+//     type: 'liked',
+//     actor: {
+//       name: 'pimptronot',
+//       avatar: User2,
+//     },
+//     time: '10 minutes ago',
+//     url: '#',
+//     notifier: 'Cryppo #1491',
+//   },
+//   {
+//     id: 3,
+//     type: 'purchased',
+//     actor: {
+//       name: 'centralgold',
+//       avatar: User3,
+//     },
+//     time: '20 minutes ago',
+//     url: '#',
+//     notifier: 'Pepe mfer #16241',
+//   },
+//   {
+//     id: 4,
+//     type: 'followed',
+//     actor: {
+//       name: 'theline',
+//       avatar: User4,
+//     },
+//     time: '30 minutes ago',
+//     url: '#',
+//     notifier: 'you',
+//   },
+// ];
 
 const NotificationPage: NextPageWithLayout = () => {
+  const { address, disconnectWallet, balance } = useContext(WalletContext);
+  const web3Modal =
+    typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
+  const getNotif = async () => {
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const user = await PushAPI.user.get({
+      account: `eip155:${address}`,
+    });
+    console.log(user);
+    // console.log(user2.encryptedPrivateKey)
+    // const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
+    //   encryptedPGPPrivateKey: user.encryptedPrivateKey,
+    //   signer: signer,
+    // });
+    const notifications = await PushAPI.user.getFeeds({
+      user: `eip155:5:${address}`, // user address in CAIP
+      env: 'staging',
+      
+    });
+    console.log(notifications);
+    setnotifications(notifications)
+    return notifications
+    
+  };
+  const [notifications, setnotifications] = useState([])
+  // setnotifications(getNotif())
+  // getNotif()
+  useEffect(() => {
+    getNotif()
+  }, [])
+  
   return (
     <>
       <NextSeo
@@ -85,9 +125,17 @@ const NotificationPage: NextPageWithLayout = () => {
         </div>
 
         {notifications.map((notification) => {
-          const notificationItem = notification as NotificationCardProps;
+          console.log(notification.notification.title)
+          console.log(notification.notification.body)
+          const notif = {
+            id: notification.sid,
+            title: notification.notification.title,
+            body :notification.notification.body
+          }
+          const notificationItem = notif as NotificationCardProps;
           return (
-            <NotificationCard key={notification.id} {...notificationItem} />
+            // <div>hello</div>
+            <NotificationCard key={notif.id} {...notificationItem} />
           );
         })}
       </div>

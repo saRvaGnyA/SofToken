@@ -209,6 +209,43 @@ const ChatDm: NextPageWithLayout = () => {
     });
     console.log(response);
   };
+  const sendNotif = async () => {
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const user = await PushAPI.user.get({
+      account: `eip155:${address}`,
+    });
+    console.log(user);
+    // console.log(user2.encryptedPrivateKey)
+    // const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
+    //   encryptedPGPPrivateKey: user.encryptedPrivateKey,
+    //   signer: signer,
+    // });
+    const apiResponse = await PushAPI.payloads.sendNotification({
+      signer: signer,
+      type: 3, // target
+      identityType: 2, // direct payload
+      notification: {
+        title: `This is title of ur new notif`,
+        body: `Hello how are you?`,
+      },
+      payload: {
+        title: `[sdk-test] payload title`,
+        body: `sample msg body`,
+        cta: '',
+        img: '',
+      },
+      recipients: `eip155:5:0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e`, // recipient address
+      channel: `eip155:5:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f`, // your channel address
+      env: "staging",
+    });
+    // const parsedResults = PushAPI.utils.parseApiResponse(apiResponse);
+
+    // const [oneNotification] = parsedResults;
+    console.log(apiResponse);
+    
+  };
   const sendMessage = async () => {
     const connection = web3Modal && (await web3Modal.connect());
     const provider = new ethers.providers.Web3Provider(connection);
@@ -251,6 +288,26 @@ const ChatDm: NextPageWithLayout = () => {
     console.log(chatHistory);
     chatHistory.reverse();
     setchat_msgs(chatHistory);
+    const to_addr = query.to.toString()
+    const apiResponse = await PushAPI.payloads.sendNotification({
+      signer: signer,
+      type: 3, // target
+      identityType: 2, // direct payload
+      notification: {
+        title: `${address} sent you a message on dm`,
+        body: curr_msg,
+      },
+      payload: {
+        title: `${address} sent you a message on dm`,
+        body: curr_msg,
+        cta: '',
+        img: '',
+      },
+      recipients: `eip155:5:${to_addr}`, // recipient address
+      channel: `eip155:5:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f`, // your channel address
+      env: "staging",
+    });
+    console.log(`api response: ${apiResponse}`)
   };
   const getMessage = async () => {
     const connection = web3Modal && (await web3Modal.connect());
@@ -413,7 +470,7 @@ const ChatDm: NextPageWithLayout = () => {
           <div className="p-2">
             {chat_msgs.map((msg) => {
               //   const query = query;
-              console.log(msg.fromDID.slice(7), address);
+              console.log(msg.fromDID.slice(7).toString(), address.toString());
 
               return address.toString() == msg.fromDID.slice(7).toString() ? (
                 <div className="chat-message my-2">
