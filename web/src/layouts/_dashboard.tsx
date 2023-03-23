@@ -47,13 +47,9 @@ function NotificationButton() {
     <div
       onClick={async() => {
         console.log('Hey there!');
-        const notifs = await getNotif();
-        const data = {
-          title:notifs.notification.title,
-          body:notifs.notification.body,
-
-        }
-        router.push({ pathname: '/notifications' ,query:data});
+        // const notifs = await getNotif();
+        
+        router.push({ pathname: '/notifications' });
       }}
       className="relative flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-gray-100 bg-white text-brand shadow-main transition-all hover:-translate-y-0.5 hover:shadow-large focus:-translate-y-0.5 focus:shadow-large focus:outline-none dark:border-gray-700 dark:bg-light-dark dark:text-white sm:h-12 sm:w-12">
         <FlashIcon className="h-auto w-3 sm:w-auto" />

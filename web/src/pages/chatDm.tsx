@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import type { NextPageWithLayout } from '@/types';
 import { NextSeo } from 'next-seo';
 import { motion } from 'framer-motion';
@@ -209,6 +209,7 @@ const ChatDm: NextPageWithLayout = () => {
     });
     console.log(response);
   };
+
   const sendMessage = async () => {
     const connection = web3Modal && (await web3Modal.connect());
     const provider = new ethers.providers.Web3Provider(connection);
@@ -251,6 +252,28 @@ const ChatDm: NextPageWithLayout = () => {
     console.log(chatHistory);
     chatHistory.reverse();
     setchat_msgs(chatHistory);
+    const to_addr = query.to.toString();
+    if (to_addr.startsWith('0x')) {
+      const apiResponse = await PushAPI.payloads.sendNotification({
+        signer: signer,
+        type: 3, // target
+        identityType: 2, // direct payload
+        notification: {
+          title: `${address} sent you a message on dm`,
+          body: curr_msg,
+        },
+        payload: {
+          title: `${address} sent you a message on dm`,
+          body: curr_msg,
+          cta: '',
+          img: '',
+        },
+        recipients: `eip155:5:${to_addr}`, // recipient address
+        channel: `eip155:5:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f`, // your channel address
+        env: 'staging',
+      });
+      console.log(`api response: ${apiResponse}`);
+    }
   };
   const getMessage = async () => {
     const connection = web3Modal && (await web3Modal.connect());
@@ -313,6 +336,9 @@ const ChatDm: NextPageWithLayout = () => {
     // console.log(`chats:${chats[0]}`);
     // console.log(`chats req:${chatsReq}`);
   };
+  useEffect(() => {
+    getMessage();
+  }, []);
 
   return (
     <>
@@ -413,7 +439,7 @@ const ChatDm: NextPageWithLayout = () => {
           <div className="p-2">
             {chat_msgs.map((msg) => {
               //   const query = query;
-              console.log(msg.fromDID.slice(7), address);
+              console.log(msg.fromDID.slice(7).toString(), address.toString());
 
               return address.toString() == msg.fromDID.slice(7).toString() ? (
                 <div className="chat-message my-2">

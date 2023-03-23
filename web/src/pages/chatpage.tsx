@@ -68,7 +68,7 @@ function SortList() {
     //     account: '0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e'
     // });
     const user2 = await PushAPI.user.get({
-      account: 'eip155:0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e',
+      account: 'eip155:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f',
     });
     console.log(user2);
     console.log(user2.encryptedPrivateKey);
@@ -79,9 +79,9 @@ function SortList() {
 
     // actual api
     const response = await PushAPI.chat.send({
-      messageContent: 'Hi Get lost!',
+      messageContent: 'Hey how are you?',
       messageType: 'Text', // can be "Text" | "Image" | "File" | "GIF"
-      receiverAddress: 'eip155:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f',
+      receiverAddress: 'eip155:0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e',
       signer: signer,
       pgpPrivateKey: pgpDecryptedPvtKey,
     });
@@ -432,13 +432,12 @@ const ChatPage: NextPageWithLayout = () => {
       },
       recipients: `eip155:5:0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e`, // recipient address
       channel: `eip155:5:0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f`, // your channel address
-      env: "staging",
+      env: 'staging',
     });
     // const parsedResults = PushAPI.utils.parseApiResponse(apiResponse);
 
     // const [oneNotification] = parsedResults;
     console.log(apiResponse);
-    
   };
   const getNotif = async () => {
     const connection = web3Modal && (await web3Modal.connect());
@@ -456,10 +455,8 @@ const ChatPage: NextPageWithLayout = () => {
     const notifications = await PushAPI.user.getFeeds({
       user: `eip155:5:${address}`, // user address in CAIP
       env: 'staging',
-      
     });
     console.log(notifications);
-    
   };
   return (
     <>
