@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import type { NextPageWithLayout } from '@/types';
 import cn from 'classnames';
 import { NextSeo } from 'next-seo';
@@ -23,9 +23,14 @@ import { Flow } from '@/components/icons/flow';
 import { Warning } from '@/components/icons/warning';
 import { Unlocked } from '@/components/icons/unlocked';
 import Avatar from '@/components/ui/avatar';
+import { Contract, ethers } from 'ethers';
+import * as PushAPI from '@pushprotocol/restapi';
+import Web3Modal from 'web3modal';
 //images
 import AuthorImage from '@/assets/images/author.jpg';
 import NFT1 from '@/assets/images/nft/nft-1.jpg';
+import { WalletContext } from '@/lib/hooks/use-connect';
+import { ABI, CONTRACT_ADDRESS } from '@/constants';
 
 const PriceOptions = [
   {
@@ -97,7 +102,26 @@ const CreateNFTPage: NextPageWithLayout = () => {
   let [explicit, setExplicit] = useState(false);
   let [unlocked, setUnlocked] = useState(false);
   let [priceType, setPriceType] = useState('fixed');
+  let [cid, setcid] = useState('');
+  let [dependency_arr, setdependency_arr] = useState([]);
   let [blockchain, setBlockChain] = useState(BlockchainOptions[0]);
+  const { address, disconnectWallet, balance } = useContext(WalletContext);
+  const web3Modal =
+    typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
+  const mintNFT = async()=>{
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+
+    const tokensContract = new Contract(CONTRACT_ADDRESS,ABI,signer);
+    
+    const mint_Res = await tokensContract.mint(cid,10,dependency_arr);
+    await mint_Res.wait(1);
+    const token_id = mint_Res;
+    //store token id and nft details on polybase
+    
+
+  }
 
   return (
     <>

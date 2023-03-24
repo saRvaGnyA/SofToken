@@ -41,7 +41,7 @@ function NftFooter({
   const { address, disconnectWallet, balance } = useContext(WalletContext);
   const web3Modal =
     typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
-  const mintNFT = async()=>{
+  const subscribeNFT = async()=>{
     const connection = web3Modal && (await web3Modal.connect());
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
@@ -92,7 +92,7 @@ function NftFooter({
         )}
 
         <div className="grid grid-cols-2 gap-3">
-        <Button shape="rounded" onClick={mintNFT}>
+        <Button shape="rounded" onClick={subscribeNFT}>
             {isAuction ? 'PLACE A BID' : `BUY FOR ${price} ETH`}
           </Button>
           <Button
