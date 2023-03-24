@@ -116,7 +116,7 @@ const UpdateProfilePage: NextPageWithLayout = () => {
     await collectionReference
       .record(address)
       .call('updateDetails', [name, bio, pfPicCid, coverPicCid]);
-    Router.push('/profile');
+    Router.push('/');
   };
 
   return (

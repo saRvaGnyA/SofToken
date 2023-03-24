@@ -56,6 +56,8 @@ function Avatar({
             alt={alt}
             width={width}
             height={height}
+            layout="fill"
+            objectFit="cover"
             className="rounded-full"
           />
         ) : (
@@ -66,7 +68,6 @@ function Avatar({
             height={height}
             layout="fill"
             objectFit="cover"
-            placeholder="blur"
             className="rounded-full"
           />
         )

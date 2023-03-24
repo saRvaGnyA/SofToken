@@ -30,7 +30,7 @@ export default function ParamTab({ tabMenu, children }: ParamTabTypes) {
     router.push(
       {
         pathname: router.pathname,
-        query: { view: tabMenu[index].path },
+        query: { ...router.query, view: tabMenu[index].path },
       },
       undefined,
       { scroll: false, shallow: true }
