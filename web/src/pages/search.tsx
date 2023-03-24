@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { atom, useAtom } from 'jotai';
 import { NextSeo } from 'next-seo';
+import AuthorImage from '@/assets/images/author.jpg';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
 import type { NextPageWithLayout } from '@/types';
 import Slider from 'rc-slider';
@@ -26,8 +27,9 @@ import * as PushAPI from '@pushprotocol/restapi';
 import Web3Modal from 'web3modal';
 import { CONTRACT_ADDRESS, ABI } from '../constants/index.js';
 import DependencySelect from '@/components/ui/dependency-select';
+import { polybase } from '@/data/utils/polybase';
 const gridCompactViewAtom = atom(false);
-import { Polybase } from "@polybase/client"
+
 export function DrawerFilters() {
   const { closeDrawer } = useDrawer();
   return (
@@ -72,6 +74,8 @@ const SearchPage: NextPageWithLayout<
   const [listOfImgs, setlistOfImgs] = useState([]);
   const [listOfNFTs, setlistOfNFTs] = useState([]);
   const { address, disconnectWallet, balance } = useContext(WalletContext);
+  const NFTcollection = polybase.collection('NFT');
+
   const web3Modal =
     typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
 
@@ -82,8 +86,9 @@ const SearchPage: NextPageWithLayout<
     { id: 4, name: 'Ending: Latest' },
   ];
   const [selectedItem, setSelectedItem] = useState(sort[0]);
-  var status = ''
-  var final_price = {min:0,max:1000}
+  var status = '';
+  var final_price = { min: 0, max: 1000 };
+
   const testing = async () => {
     const connection = web3Modal && (await web3Modal.connect());
     const provider = new ethers.providers.Web3Provider(connection);
@@ -111,9 +116,44 @@ const SearchPage: NextPageWithLayout<
     //ipfs://Qmaa6TuP2s9pSKczHF4rwWhTKUdygrrDs8RmYYqCjP3Hye/0.json
     //https://ipfs.io/ipfs/bafkreifvallbyfxnedeseuvkkswt5u3hbdb2fexcygbyjqy5a5rzmhrzei
   };
-  const check = () => {
+  const getList = async () => {
+    var listOfNFT = await NFTcollection.get();
+    var finalList = []
+    listOfNFT.data.forEach(function (item, index) {
+      console.log(item.data, index);
+      finalList.push({
+        id:index, //needs to be updated
+        name: item.data.name,
+        desc: item.data.description,
+        price: item.data.base_price+" ETH",
+        author: item.data.minter.id,
+        clause: item.data.clause_type
+      })
+    });
+    setlistOfNFTs(finalList);
+  };
+  const check = async() => {
     console.log(status);
     console.log(final_price);
+    var listOfNFT = await NFTcollection.get();
+
+    var finalList = []
+    listOfNFT.data.forEach(function (item, index) {
+      var price_  = parseFloat(item.data.base_price) 
+      console.log( index, price_ , status , final_price);
+      if(price_>= final_price.min && price_<=final_price.max && item.data.clause_type === status)
+     { finalList.push({
+        id:index, //needs to be updated
+        name: item.data.name,
+        desc: item.data.description,
+        price: item.data.base_price+" ETH",
+        author: item.data.minter.id,
+        clause: item.data.clause_type
+      })}
+    });
+    setlistOfNFTs(finalList);
+    
+
   };
   function useGridSwitcher() {
     const [isGridCompact, setIsGridCompact] = useAtom(gridCompactViewAtom);
@@ -201,13 +241,12 @@ const SearchPage: NextPageWithLayout<
   }
 
   function PriceRange() {
-    let [range, setRange] = useState({ min: 0, max: 1000 });
+    let [range, setRange] = useState({ min: 0.1, max: 2 });
     function handleRangeChange(value: any) {
       setRange({
         min: value[0],
         max: value[1],
       });
-      
     }
 
     function handleMaxChange(max: number) {
@@ -215,7 +254,6 @@ const SearchPage: NextPageWithLayout<
         ...range,
         max: max || range.min,
       });
-      
     }
 
     function handleMinChange(min: number) {
@@ -223,9 +261,8 @@ const SearchPage: NextPageWithLayout<
         ...range,
         min: min || 0,
       });
-      
     }
-    final_price = range  
+    final_price = range;
 
     return (
       <div className="p-5">
@@ -234,6 +271,7 @@ const SearchPage: NextPageWithLayout<
             className="h-9 rounded-lg border-gray-200 text-sm text-gray-900 outline-none focus:border-gray-900 focus:outline-none focus:ring-0 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-gray-500"
             type="number"
             value={range.min}
+            step={0.01}
             onChange={(e) => handleMinChange(parseInt(e.target.value))}
             min="0"
             max={range.max}
@@ -242,6 +280,7 @@ const SearchPage: NextPageWithLayout<
             className="h-9 rounded-lg border-gray-200 text-sm text-gray-900 outline-none focus:border-gray-900 focus:outline-none focus:ring-0 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-gray-500"
             type="number"
             value={range.max}
+            step={0.01}
             onChange={(e) => handleMaxChange(parseInt(e.target.value))}
             // onBlur={setprice_range(range)}
             min={range.min}
@@ -249,10 +288,11 @@ const SearchPage: NextPageWithLayout<
         </div>
         <Slider
           range
-          min={0}
-          max={1000}
+          min={0.1}
+          max={2}
           value={[range.min, range.max]}
           allowCross={false}
+          step={0.01}
           onChange={(value) => handleRangeChange(value)}
           // onBlur={setprice_range(range)}
         />
@@ -264,53 +304,53 @@ const SearchPage: NextPageWithLayout<
     // console.log(listOfNFTs)
     let [plan, setPlan] = useState('buy-now');
     console.log(plan);
-    status = plan
+    status = plan;
     return (
       <RadioGroup
         value={plan}
         onChange={setPlan}
         className="grid grid-cols-2 gap-2 p-5"
       >
-        <RadioGroup.Option value="buy-now">
+        <RadioGroup.Option value="prop">
           {({ checked }) => (
             <span
-              className={`flex h-9 cursor-pointer items-center justify-center rounded-lg border border-solid text-center text-sm font-medium uppercase tracking-wide transition-all ${
+              className={`h-30 flex grid-cols-2 cursor-pointer items-center justify-center rounded-lg border border-solid text-center text-sm font-medium  tracking-wide transition-all ${
                 checked
                   ? 'border-brand bg-brand text-white shadow-button'
                   : 'border-gray-200 bg-white text-brand dark:border-gray-700 dark:bg-gray-800 dark:text-white'
               }`}
             >
-              Buy Now
+              Properitary Executable
             </span>
           )}
         </RadioGroup.Option>
-        <RadioGroup.Option value="on-auction">
+        <RadioGroup.Option value="royalty">
           {({ checked }) => (
             <span
-              className={`flex h-9 cursor-pointer items-center justify-center rounded-lg border border-solid text-center text-sm font-medium uppercase tracking-wide transition-all ${
+              className={`h-30 flex cursor-pointer items-center justify-center rounded-lg border border-solid text-center text-sm font-medium  tracking-wide transition-all ${
                 checked
                   ? 'border-brand bg-brand text-white shadow-button'
                   : 'border-gray-200 bg-white text-brand dark:border-gray-700 dark:bg-gray-800 dark:text-white'
               }`}
             >
-              On Auction
+              Reusable with Royalty
             </span>
           )}
         </RadioGroup.Option>
-        <RadioGroup.Option value="new">
+        <RadioGroup.Option value="nonroyalty">
           {({ checked }) => (
             <span
-              className={`flex h-9 cursor-pointer items-center justify-center rounded-lg border border-solid text-center text-sm font-medium uppercase tracking-wide transition-all ${
+              className={`h-30  flex cursor-pointer items-center justify-center rounded-lg border border-solid text-center text-sm font-medium  tracking-wide transition-all ${
                 checked
                   ? 'border-brand bg-brand text-white shadow-button'
                   : 'border-gray-200 bg-white text-brand dark:border-gray-700 dark:bg-gray-800 dark:text-white'
               }`}
             >
-              New
+              Reusable without Royalty
             </span>
           )}
         </RadioGroup.Option>
-        <RadioGroup.Option value="has-offers">
+        {/* <RadioGroup.Option value="has-offers">
           {({ checked }) => (
             <span
               className={`flex h-9 cursor-pointer items-center justify-center rounded-lg border border-solid text-center text-sm font-medium uppercase tracking-wide transition-all ${
@@ -322,7 +362,7 @@ const SearchPage: NextPageWithLayout<
               Has offers
             </span>
           )}
-        </RadioGroup.Option>
+        </RadioGroup.Option> */}
       </RadioGroup>
     );
   }
@@ -348,6 +388,10 @@ const SearchPage: NextPageWithLayout<
       </>
     );
   }
+  useEffect(() => {
+    getList();
+  }, []);
+  console.log(listOfNFTs);
   return (
     <>
       <Button
@@ -399,16 +443,16 @@ const SearchPage: NextPageWithLayout<
                 : 'grid gap-6 sm:grid-cols-2 md:grid-cols-3 3xl:grid-cols-3 4xl:grid-cols-4'
             }
           >
-            {NFTList.map((nft) => (
+            {listOfNFTs.map((nft) => (
               <NFTGrid
                 key={nft.id}
                 id={nft.id}
                 name={nft.name}
-                image={nft.image}
+                image="{nft.image}"
                 author={nft.author}
-                authorImage={nft.authorImage}
+                authorImage={AuthorImage}
                 price={nft.price}
-                collection={nft.collection}
+                collection='Chromory'
               />
             ))}
           </div>

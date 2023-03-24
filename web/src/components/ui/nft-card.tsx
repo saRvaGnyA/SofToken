@@ -49,7 +49,7 @@ export default function NFTGrid({
         />
 https://bafybeig7e6b4uyqsqh7lwjuuizcnyygekjuajof6myg67yilxdtdcbspua.ipfs.w3s.link/images/2.svg
       </AnchorLink> */}
-      <img src={`https://bafybeig7e6b4uyqsqh7lwjuuizcnyygekjuajof6myg67yilxdtdcbspua.ipfs.w3s.link/images/${id-1}.svg`}></img>
+      <img src={`https://bafybeig7e6b4uyqsqh7lwjuuizcnyygekjuajof6myg67yilxdtdcbspua.ipfs.w3s.link/images/${id}.svg`}></img>
 
       <div className="p-5">
         <AnchorLink
