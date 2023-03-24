@@ -20,7 +20,7 @@ import * as PushAPI from '@pushprotocol/restapi';
 import Web3Modal from 'web3modal';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
-import { CONTRACT_ADDRESS } from '@/constants';
+import { CONTRACT_ADDRESS,ABI } from '@/constants';
 
 interface NftFooterProps {
   className?: string;
