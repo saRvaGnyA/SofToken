@@ -15,11 +15,12 @@ import { nftData } from '@/data/static/single-nft';
 import NftDropDown from './nft-dropdown';
 import Avatar from '@/components/ui/avatar';
 import { WalletContext } from '@/lib/hooks/use-connect';
-import { ethers } from 'ethers';
+import { Contract, ethers } from 'ethers';
 import * as PushAPI from '@pushprotocol/restapi';
 import Web3Modal from 'web3modal';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
+import { CONTRACT_ADDRESS } from '@/constants';
 
 interface NftFooterProps {
   className?: string;
@@ -41,14 +42,18 @@ function NftFooter({
   const { address, disconnectWallet, balance } = useContext(WalletContext);
   const web3Modal =
     typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
-  const subscribeNFT = async()=>{
+  const subscribeNFT = async () => {
     const connection = web3Modal && (await web3Modal.connect());
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
-    
-    router.push({pathname:'/profile'})
-
-  }
+    const tokensContract = new Contract(CONTRACT_ADDRESS, ABI, signer);
+    //fetch token id  and curr cost of nft from polybase
+    const token_id = 1;
+    const cost_of_nft = 10;
+    const res = await tokensContract.subscribe(token_id, cost_of_nft);
+    console.log(res);
+    router.push({ pathname: '/profile' });
+  };
   return (
     <div
       className={cn(
@@ -92,7 +97,7 @@ function NftFooter({
         )}
 
         <div className="grid grid-cols-2 gap-3">
-        <Button shape="rounded" onClick={subscribeNFT}>
+          <Button shape="rounded" onClick={subscribeNFT}>
             {isAuction ? 'PLACE A BID' : `BUY FOR ${price} ETH`}
           </Button>
           <Button
