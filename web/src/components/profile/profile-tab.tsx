@@ -15,6 +15,7 @@ import { polybase } from '@/data/utils/polybase';
 
 export default function ProfileTab({ followersList, followingList }) {
   const collectionReference = polybase.collection('User');
+  
   const [followerDetails, setFollowerDetails] = useState([]);
   const [followingDetails, setFollowingDetails] = useState([]);
 
