@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { atom, useAtom } from 'jotai';
 import { NextSeo } from 'next-seo';
 import type { GetStaticProps, InferGetStaticPropsType } from 'next';
@@ -20,7 +20,11 @@ import Scrollbar from '@/components/ui/scrollbar';
 import Button from '@/components/ui/button';
 import { Close } from '@/components/icons/close';
 import { NFTList } from '@/data/static/nft-list';
-
+import { WalletContext } from '@/lib/hooks/use-connect';
+import { Contract, ethers } from 'ethers';
+import * as PushAPI from '@pushprotocol/restapi';
+import Web3Modal from 'web3modal';
+import {CONTRACT_ADDRESS,ABI} from "../constants/index.js";
 const gridCompactViewAtom = atom(false);
 function useGridSwitcher() {
   const [isGridCompact, setIsGridCompact] = useAtom(gridCompactViewAtom);
@@ -294,9 +298,48 @@ const SearchPage: NextPageWithLayout<
 > = () => {
   const { isGridCompact } = useGridSwitcher();
   const { openDrawer } = useDrawer();
-  
+  const [listOfImgs, setlistOfImgs] = useState([]);
+  const { address, disconnectWallet, balance } = useContext(WalletContext);
+  const web3Modal =
+    typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
+  const testing = async()=>{
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = await provider.getSigner();
+    const tokensContract = new Contract(CONTRACT_ADDRESS,ABI,signer);
+    const listOfToks = await tokensContract.getTotalTokens();
+    console.log(parseInt(listOfToks.toString()));
+    const numOfToks = parseInt(listOfToks.toString())
+    var listOfImages = []
+    // const uriImg = await tokensContract.uri(0);
+    // const finalStr =  "https://ipfs.io/ipfs/"+uriImg.toString().slice(7,-6)
+    
+    for(let i =0;i<numOfToks;i++){
+      //  await uriImg.wait(1)
+      //  console.log(finalStr)
+      //  setlistOfImgs([...listOfImgs,`https://ipfs.io/ipfs/QmQd5ziX7Ru4mXhmrEdT8DevLu6uFg5TtJSxSU7PRJnYEw/${i}.png`])
+       listOfImages.push(`https://ipfs.io/ipfs/QmQd5ziX7Ru4mXhmrEdT8DevLu6uFg5TtJSxSU7PRJnYEw/${i}.png`)
+      }
+      setlistOfImgs(listOfImages)
+      console.log(listOfImgs)
+
+    // return listOfImages;
+    //ipfs://Qmaa6TuP2s9pSKczHF4rwWhTKUdygrrDs8RmYYqCjP3Hye/0.json
+    //https://ipfs.io/ipfs/bafkreifvallbyfxnedeseuvkkswt5u3hbdb2fexcygbyjqy5a5rzmhrzei
+    
+
+
+  }
+  const check=()=>{
+    console.log(listOfImgs)
+  }
   return (
     <>
+    <Button onClick={async()=>{
+      const value = await testing()
+      // setlistOfImgs(value)
+    }}>Testing</Button>
+    <Button onClick={check}>Check</Button>
       <NextSeo
         title="Explore NTF"
         description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
@@ -340,6 +383,7 @@ const SearchPage: NextPageWithLayout<
             {NFTList.map((nft) => (
               <NFTGrid
                 key={nft.id}
+                id={nft.id}
                 name={nft.name}
                 image={nft.image}
                 author={nft.author}

@@ -7,6 +7,7 @@ import { StaticImageData } from 'next/image';
 type NFTGridProps = {
   author: string;
   authorImage: StaticImageData;
+  id:BigInteger;
   image: StaticImageData;
   name: string;
   collection: string;
@@ -16,6 +17,7 @@ type NFTGridProps = {
 export default function NFTGrid({
   author,
   authorImage,
+  id,
   image,
   name,
   collection,
@@ -37,7 +39,7 @@ export default function NFTGrid({
           <span className="overflow-hidden text-ellipsis">@{author}</span>
         </AnchorLink>
       </div>
-      <AnchorLink href="/nft-details" className="relative block w-full pb-full">
+      {/* <AnchorLink href="/nft-details" className="relative block w-full pb-full">
         <Image
           src={image}
           placeholder="blur"
@@ -45,7 +47,9 @@ export default function NFTGrid({
           objectFit="cover"
           alt=""
         />
-      </AnchorLink>
+
+      </AnchorLink> */}
+      <img src={`https://ipfs.io/ipfs/QmQd5ziX7Ru4mXhmrEdT8DevLu6uFg5TtJSxSU7PRJnYEw/${id-1}.png`}></img>
 
       <div className="p-5">
         <AnchorLink

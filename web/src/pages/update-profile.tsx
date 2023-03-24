@@ -27,6 +27,8 @@ import { WalletContext } from '@/lib/hooks/use-connect';
 import { polybase } from '../data/utils/polybase';
 import { Web3Storage } from 'web3.storage';
 import Router from 'next/router';
+import * as PushAPI from '@pushprotocol/restapi';
+
 
 //images
 import AuthorImage from '@/assets/images/author.jpg';
@@ -98,6 +100,10 @@ const UpdateProfilePage: NextPageWithLayout = () => {
       coverPicCid,
       pfPicCid,
     ]);
+  const user = await PushAPI.user.create({
+      account: `${address}`
+  });
+  console.log(`user created successfully ${user}`)
     setProfilePicCid(pfPicCid);
     setIsProfileComplete(true);
     Router.push('/profile');

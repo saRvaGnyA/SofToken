@@ -14,7 +14,12 @@ import { useModal } from '@/components/modal-views/context';
 import { nftData } from '@/data/static/single-nft';
 import NftDropDown from './nft-dropdown';
 import Avatar from '@/components/ui/avatar';
+import { WalletContext } from '@/lib/hooks/use-connect';
+import { ethers } from 'ethers';
+import * as PushAPI from '@pushprotocol/restapi';
+import Web3Modal from 'web3modal';
 import { useRouter } from 'next/router';
+import { useContext } from 'react';
 
 interface NftFooterProps {
   className?: string;
@@ -33,6 +38,17 @@ function NftFooter({
 }: NftFooterProps) {
   const { openModal } = useModal();
   const router = useRouter();
+  const { address, disconnectWallet, balance } = useContext(WalletContext);
+  const web3Modal =
+    typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
+  const mintNFT = async()=>{
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    
+    router.push({pathname:'/profile'})
+
+  }
   return (
     <div
       className={cn(
@@ -76,7 +92,7 @@ function NftFooter({
         )}
 
         <div className="grid grid-cols-2 gap-3">
-        <Button shape="rounded" onClick={()=>{return router.push({pathname:'/profile'})}}>
+        <Button shape="rounded" onClick={mintNFT}>
             {isAuction ? 'PLACE A BID' : `BUY FOR ${price} ETH`}
           </Button>
           <Button
