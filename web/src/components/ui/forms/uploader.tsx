@@ -3,10 +3,10 @@ import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Button from '@/components/ui/button';
 
-function Uploader() {
-  const [files, setFiles] = useState([]);
+function Uploader({ files, setFiles }) {
   const { getRootProps, getInputProps } = useDropzone({
-    accept: 'image/*',
+    accept:
+      'application/zip, application/x-zip-compressed, multipart/x-zip, application/x-7z-compressed, application/x-bzip, application/x-bzip2, application/gzip',
     multiple: false,
     onDrop: (acceptedFiles: any) => {
       setFiles(
@@ -20,12 +20,13 @@ function Uploader() {
   });
 
   const thumbs = files.map((file: any) => (
-    <div key={file.name} className="h-full w-full">
-      <img
-        src={file.preview}
-        className="mx-auto max-h-full max-w-full object-contain"
-        alt="uploaded image"
-      />
+    <div key={file.name} className="h-full w-full p-12 text-center">
+      <p className="mb-6 text-sm tracking-tighter text-gray-600 dark:text-gray-400">
+        {file.name}
+      </p>
+      <p className="mb-6 text-sm tracking-tighter text-gray-600 dark:text-gray-400">
+        {file.size} bytes
+      </p>
     </div>
   ));
 
@@ -50,7 +51,7 @@ function Uploader() {
         ) : (
           <div className="text-center">
             <p className="mb-6 text-sm tracking-tighter text-gray-600 dark:text-gray-400">
-              PNG, GIF, WEBP, MP4 or MP3. Max 100mb.
+              ZIPPED/COMPRESSED ARCHIVE Files ONLY
             </p>
             <Button>CHOOSE FILE</Button>
           </div>
