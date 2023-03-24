@@ -33,6 +33,7 @@ import Web3Modal from 'web3modal';
 import { Web3Storage } from 'web3.storage';
 import { polybase } from '@/data/utils/polybase';
 import DependencySelect from '@/components/ui/dependency-select';
+import Router from 'next/router';
 
 //images
 import AuthorImage from '@/assets/images/author.jpg';
@@ -92,6 +93,7 @@ function PriceType({ value, onChange }: PriceTypeProps) {
 
 const CreateNFTPage: NextPageWithLayout = () => {
   const collectionReference = polybase.collection('NFT');
+  const userCollectionReference = polybase.collection('User');
   let [publish, setPublish] = useState(true);
   let [priceType, setPriceType] = useState('prop');
   let [cid, setcid] = useState('');
@@ -111,7 +113,7 @@ const CreateNFTPage: NextPageWithLayout = () => {
   function makeStorageClient() {
     return new Web3Storage({ token: process.env.NEXT_PUBLIC_FILECOIN_API_KEY });
   }
-  
+
   const mintNFT = async () => {
     const client = makeStorageClient();
     const filesCid = await client.put(zipFiles);
@@ -122,20 +124,24 @@ const CreateNFTPage: NextPageWithLayout = () => {
 
     const tokensContract = new Contract(CONTRACT_ADDRESS, ABI, signer);
 
-    const mint_Res = await tokensContract.mint(filesCid, 10, []);
+    const mint_Res = await tokensContract.mint_nft(filesCid, []);
     await mint_Res.wait(1);
-    const token_id = mint_Res;
+
+    const token_id = (await tokensContract.getTotalTokens()) - 1;
     //store token id and nft details on polybase
 
     await collectionReference.create([
-      token_id,
+      token_id.toString(),
       name,
       description,
       Date.now().toString(),
-      price,
+      Number(price),
       priceType,
       [],
+      await userCollectionReference.record(address),
     ]);
+
+    Router.push('/profile');
   };
 
   return (
@@ -221,7 +227,7 @@ const CreateNFTPage: NextPageWithLayout = () => {
             type="number"
             value={price}
             onChange={(e) => {
-              setPrice(e.target.value);
+              setPrice(Number(e.target.value));
             }}
             placeholder="Enter your base price"
             inputClassName="spin-button-hidden"

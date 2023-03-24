@@ -106,7 +106,7 @@ const UpdateProfilePage: NextPageWithLayout = () => {
   console.log(`user created successfully ${user}`)
     setProfilePicCid(pfPicCid);
     setIsProfileComplete(true);
-    Router.push('/profile');
+    Router.push('/');
   };
 
   const updateHandler = async () => {

@@ -1,4 +1,4 @@
-export const CONTRACT_ADDRESS = '0x4f6441Cd55309F58339D5c42009Bf4346Ba0af1A';
+export const CONTRACT_ADDRESS = '0x8d650ae4B5011431dd58c16cc84769D094Ddf93C';
 export const ABI = [
   {
     inputs: [],
@@ -76,17 +76,12 @@ export const ABI = [
         type: 'string',
       },
       {
-        internalType: 'uint256',
-        name: 'cost_of_token',
-        type: 'uint256',
-      },
-      {
         internalType: 'string[]',
         name: 'dependent_cid',
         type: 'string[]',
       },
     ],
-    name: 'mint',
+    name: 'mint_nft',
     outputs: [
       {
         internalType: 'uint256',
@@ -531,6 +526,19 @@ export const ABI = [
         internalType: 'uint256[]',
         name: '',
         type: 'uint256[]',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getTotalTokens',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',

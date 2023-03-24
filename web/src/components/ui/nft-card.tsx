@@ -3,11 +3,12 @@ import AnchorLink from '@/components/ui/links/anchor-link';
 import { Verified } from '@/components/icons/verified';
 import Avatar from '@/components/ui/avatar';
 import { StaticImageData } from 'next/image';
+import { useEffect, useState } from 'react';
 
 type NFTGridProps = {
   author: string;
   authorImage: StaticImageData;
-  id:BigInteger;
+  id: BigInteger;
   image: StaticImageData;
   name: string;
   collection: string;
@@ -23,6 +24,20 @@ export default function NFTGrid({
   collection,
   price,
 }: NFTGridProps) {
+  const [url, setUrl] = useState('');
+
+  const initialLoad = async () => {
+    const res = await fetch(
+      `https://bafybeihpjhkeuiq3k6nqa3fkgeigeri7iebtrsuyuey5y6vy36n345xmbi.ipfs.w3s.link/${id}`
+    );
+    const img = await res.json();
+    setUrl(img.image);
+  };
+
+  useEffect(() => {
+    initialLoad();
+  }, []);
+
   return (
     <div className="relative overflow-hidden rounded-lg bg-white shadow-card transition-all duration-200 hover:shadow-large dark:bg-light-dark">
       <div className="p-4">
@@ -49,7 +64,7 @@ export default function NFTGrid({
         />
 https://bafybeig7e6b4uyqsqh7lwjuuizcnyygekjuajof6myg67yilxdtdcbspua.ipfs.w3s.link/images/2.svg
       </AnchorLink> */}
-      <img src={`https://bafybeig7e6b4uyqsqh7lwjuuizcnyygekjuajof6myg67yilxdtdcbspua.ipfs.w3s.link/images/${id-1}.svg`}></img>
+      {url && <img src={`https://w3s.link/ipfs/${url.slice(7)}`}></img>}
 
       <div className="p-5">
         <AnchorLink
