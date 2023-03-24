@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "../node_modules/@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
-import "../node_modules/@openzeppelin/contracts/security/Pausable.sol";
-import "../node_modules/@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
-import "../node_modules/@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
+import "@openzeppelin/contracts/token/ERC1155/extensions/ERC1155Supply.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract Web3Builders is ERC1155, Ownable, Pausable, ERC1155Supply {
-    uint256 private total_tokens = 0;
+    uint256 public total_tokens = 0;
     uint256 private min_token_value = 0.01 ether;
     uint256 private permitted_number_of_tokens = 1;
 
@@ -17,7 +17,7 @@ contract Web3Builders is ERC1155, Ownable, Pausable, ERC1155Supply {
     mapping(string => uint256) private cid_to_token;
     mapping(address => uint256[]) private address_to_subscribed_token;
     // mapping(address => mapping(uint256 => uint256)) private user_token_database;
-     mapping(address => mapping(uint256 => uint256[])) private user_token_database;
+     mapping(address => mapping(uint256 => mapping(uint256=>uint256))) private user_token_database;
      //0th index for whether he has minted nft or not
      //1st index for whether he has voted or not
     mapping(uint256=>uint256[]) votes_and_ratings;
@@ -44,15 +44,12 @@ contract Web3Builders is ERC1155, Ownable, Pausable, ERC1155Supply {
         _unpause();
     }
 
-    function mint(
+    function mint_nft(
         string memory cid,
-        uint256 cost_of_token,
+        
         string[] memory dependent_cid
-    ) public payable {
-        require(
-            msg.value >= cost_of_token,
-            "Minimum token value of 0.01 ether is peermitted."
-        );
+    ) public payable returns(uint256){
+       
 
         _mint(msg.sender, total_tokens, permitted_number_of_tokens, "");
 
@@ -74,15 +71,16 @@ contract Web3Builders is ERC1155, Ownable, Pausable, ERC1155Supply {
             total_cost_per_token[total_tokens] +
             msg.value;
         total_tokens++;
+        return total_tokens-1;
     }
 
     function subscribe(
-        string memory cid,
+        uint256 token_id,
         uint256 cost_of_token
     ) public payable {
-        uint256 token_id = cid_to_token[cid];
+        
         require(
-            user_token_database[msg.sender][token_id] == 0,
+            user_token_database[msg.sender][token_id][0] == 0,
             "User have already subscribed to this codebase."
         );
         require(
@@ -109,8 +107,12 @@ contract Web3Builders is ERC1155, Ownable, Pausable, ERC1155Supply {
         return address_to_subscribed_token[msg.sender];
     }
 
+    function getTotalTokens() public view returns (uint256) {
+        return total_tokens;
+    }
+
     //allows voting for given nft
-    function vote(uint256 token_id,uint256 vote_type){
+    function vote(uint256 token_id,uint256 vote_type) public{
         //0 for upvote
         require(user_token_database[msg.sender][token_id][1]==0,"Sorry,you can't vote");
         if(vote_type==0){
@@ -143,8 +145,8 @@ contract Web3Builders is ERC1155, Ownable, Pausable, ERC1155Supply {
         return votes_and_ratings[token_id];
     }
 
-    function withdraw(string memory cid) external {
-        uint256 token_id = cid_to_token[cid];
+    function withdraw(uint256 token_id) external {
+       
         require(
             token_to_creator_address[token_id] == msg.sender,
             "You are not the owner of this NFT."
