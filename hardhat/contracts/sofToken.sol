@@ -16,9 +16,17 @@ contract Web3Builders is ERC1155, Ownable, Pausable, ERC1155Supply {
     mapping(address => uint256[]) private address_to_created_token;
     mapping(string => uint256) private cid_to_token;
     mapping(address => uint256[]) private address_to_subscribed_token;
-    mapping(address => mapping(uint256 => uint256)) private user_token_database;
+    // mapping(address => mapping(uint256 => uint256)) private user_token_database;
+     mapping(address => mapping(uint256 => uint256[])) private user_token_database;
+     //0th index for whether he has minted nft or not
+     //1st index for whether he has voted or not
+    mapping(uint256=>uint256[]) votes_and_ratings;
+    // 0th index for upvotes
+    //1st index for downvotes
+    //2nd index for rating
     mapping(uint256 => uint256[]) dependent_database;
     mapping(uint256 => uint256) total_cost_per_token;
+    mapping(uint256=> uint256) total_owners_per_nft;
 
     constructor()
         ERC1155("ipfs://Qmaa6TuP2s9pSKczHF4rwWhTKUdygrrDs8RmYYqCjP3Hye/")
@@ -51,7 +59,11 @@ contract Web3Builders is ERC1155, Ownable, Pausable, ERC1155Supply {
         token_to_creator_address[total_tokens] = msg.sender;
         address_to_created_token[msg.sender].push(total_tokens);
         cid_to_token[cid] = total_tokens;
-        user_token_database[msg.sender][total_tokens] = 1;
+        // user_token_database[msg.sender][total_tokens] = 1;
+        user_token_database[msg.sender][total_tokens][0] = 1;
+        user_token_database[msg.sender][total_tokens][1] = 0; //0 means he hasn't voted yet
+        votes_and_ratings[total_tokens]=[0,0,0];    //initially everything is zero
+        total_owners_per_nft[total_tokens]=1;
 
         for (uint256 i = 0; i < dependent_cid.length; i++) {
             uint256 token_id = cid_to_token[dependent_cid[i]];
@@ -80,10 +92,13 @@ contract Web3Builders is ERC1155, Ownable, Pausable, ERC1155Supply {
 
         _mint(msg.sender, token_id, permitted_number_of_tokens, "");
         address_to_subscribed_token[msg.sender].push(token_id);
-        user_token_database[msg.sender][token_id] = 1;
+        // user_token_database[msg.sender][token_id] = 1;
+        user_token_database[msg.sender][token_id][0] = 1;
+        user_token_database[msg.sender][token_id][1] = 0;
         total_cost_per_token[token_id] =
             total_cost_per_token[token_id] +
             msg.value;
+            total_owners_per_nft[token_id]=total_owners_per_nft[token_id]+1;
     }
 
     function getCreatedTokensIds() public view returns (uint256[] memory) {
@@ -92,6 +107,40 @@ contract Web3Builders is ERC1155, Ownable, Pausable, ERC1155Supply {
 
     function getSubscribedTokenIds() public view returns (uint256[] memory) {
         return address_to_subscribed_token[msg.sender];
+    }
+
+    //allows voting for given nft
+    function vote(uint256 token_id,uint256 vote_type){
+        //0 for upvote
+        require(user_token_database[msg.sender][token_id][1]==0,"Sorry,you can't vote");
+        if(vote_type==0){
+            votes_and_ratings[token_id][0]=votes_and_ratings[token_id][0]+1;
+        }
+        //1 for downvote
+        else{
+            votes_and_ratings[token_id][1]=votes_and_ratings[token_id][1]+1;
+        }
+        user_token_database[msg.sender][token_id][1]==1;
+    }
+
+    //calculates rating of given nft
+    function calculateRating(uint256 token_id) public returns (uint256){
+        uint256 upvotes=votes_and_ratings[token_id][0];
+        uint256 downvotes=votes_and_ratings[token_id][1];
+        uint256 total_votes=upvotes+downvotes;
+        return (upvotes*100)/total_votes;
+    }
+
+    //calculates current value of given nft
+    function calculateTokenValue(uint256 token_id) public returns (uint256){
+        uint256 rating=calculateRating(token_id);
+        total_cost_per_token[token_id]=total_cost_per_token[token_id]*rating;
+        
+        return (total_cost_per_token[token_id]/total_owners_per_nft[token_id]);
+    }
+
+    function getVotesAndRating(uint256 token_id) public view returns (uint256[] memory){
+        return votes_and_ratings[token_id];
     }
 
     function withdraw(string memory cid) external {
@@ -121,6 +170,7 @@ contract Web3Builders is ERC1155, Ownable, Pausable, ERC1155Supply {
                 payable(dependent_owner).transfer(individual_cost);
             }
             payable(msg.sender).transfer(cost_to_owner);
+            total_owners_per_nft[token_id]=total_owners_per_nft[token_id]-1;
         }
     }
 
