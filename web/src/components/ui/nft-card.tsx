@@ -47,9 +47,9 @@ export default function NFTGrid({
           objectFit="cover"
           alt=""
         />
-
+https://bafybeig7e6b4uyqsqh7lwjuuizcnyygekjuajof6myg67yilxdtdcbspua.ipfs.w3s.link/images/2.svg
       </AnchorLink> */}
-      <img src={`https://ipfs.io/ipfs/QmQd5ziX7Ru4mXhmrEdT8DevLu6uFg5TtJSxSU7PRJnYEw/${id-1}.png`}></img>
+      <img src={`https://bafybeig7e6b4uyqsqh7lwjuuizcnyygekjuajof6myg67yilxdtdcbspua.ipfs.w3s.link/images/${id-1}.svg`}></img>
 
       <div className="p-5">
         <AnchorLink

@@ -25,6 +25,7 @@ import { Contract, ethers } from 'ethers';
 import * as PushAPI from '@pushprotocol/restapi';
 import Web3Modal from 'web3modal';
 import {CONTRACT_ADDRESS,ABI} from "../constants/index.js";
+import DependencySelect from '@/components/ui/dependency-select';
 const gridCompactViewAtom = atom(false);
 function useGridSwitcher() {
   const [isGridCompact, setIsGridCompact] = useAtom(gridCompactViewAtom);
@@ -251,6 +252,9 @@ function Filters() {
       </Collapse>
       <Collapse label="Collection" initialOpen>
         <CollectionSelect onSelect={(value) => console.log(value)} />
+      </Collapse>
+      <Collapse label="Dependency" initialOpen>
+        <DependencySelect onSelect={(value) => console.log(`this is ${value}`)} />
       </Collapse>
     </>
   );
