@@ -7,6 +7,7 @@ function Uploader({ files, setFiles }) {
   const { getRootProps, getInputProps } = useDropzone({
     accept: 'image/*',
     multiple: false,
+    maxSize: 5242880,
     onDrop: (acceptedFiles: any) => {
       setFiles(
         acceptedFiles.map((file: any) =>
@@ -49,7 +50,7 @@ function Uploader({ files, setFiles }) {
         ) : (
           <div className="text-center">
             <p className="mb-6 text-sm tracking-tighter text-gray-600 dark:text-gray-400">
-              PNG, JPG, JPEG or WEBP. Max 10mb.
+              PNG, JPG, JPEG or WEBP. Max 5mb.
             </p>
             <Button>CHOOSE FILE</Button>
           </div>

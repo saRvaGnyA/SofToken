@@ -155,7 +155,7 @@ const AuthorProfilePage: NextPageWithLayout<
   const submitUnfollow = async () => {
     await followerCollectionReference
       .record(`${recordGlobal.username}-${username}`)
-      .call('del', [`${recordGlobal.username}-${username}`]);
+      .call('del');
     setIsFollows(false);
     setFollowers((followers) => followers - 1);
   };
