@@ -1,4 +1,4 @@
-export const CONTRACT_ADDRESS = "0x663f0b72337e6Db8Aa5Cca3cEc36122CFe80B6C7"
+export const CONTRACT_ADDRESS = "0x4f6441Cd55309F58339D5c42009Bf4346Ba0af1A"
 export const ABI = [
     {
         "inputs": [],
@@ -33,6 +33,44 @@ export const ABI = [
     {
         "inputs": [
             {
+                "internalType": "uint256",
+                "name": "token_id",
+                "type": "uint256"
+            }
+        ],
+        "name": "calculateRating",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "token_id",
+                "type": "uint256"
+            }
+        ],
+        "name": "calculateTokenValue",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "string",
                 "name": "cid",
                 "type": "string"
@@ -49,7 +87,13 @@ export const ABI = [
             }
         ],
         "name": "mint",
-        "outputs": [],
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
         "stateMutability": "payable",
         "type": "function"
     },
@@ -227,9 +271,9 @@ export const ABI = [
     {
         "inputs": [
             {
-                "internalType": "string",
-                "name": "cid",
-                "type": "string"
+                "internalType": "uint256",
+                "name": "token_id",
+                "type": "uint256"
             },
             {
                 "internalType": "uint256",
@@ -371,9 +415,27 @@ export const ABI = [
     {
         "inputs": [
             {
-                "internalType": "string",
-                "name": "cid",
-                "type": "string"
+                "internalType": "uint256",
+                "name": "token_id",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "vote_type",
+                "type": "uint256"
+            }
+        ],
+        "name": "vote",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "token_id",
+                "type": "uint256"
             }
         ],
         "name": "withdraw",
@@ -475,13 +537,19 @@ export const ABI = [
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "getTotalTokens",
-        "outputs": [
+        "inputs": [
             {
                 "internalType": "uint256",
-                "name": "",
+                "name": "token_id",
                 "type": "uint256"
+            }
+        ],
+        "name": "getVotesAndRating",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
             }
         ],
         "stateMutability": "view",
@@ -551,6 +619,19 @@ export const ABI = [
                 "internalType": "bool",
                 "name": "",
                 "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "total_tokens",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",
