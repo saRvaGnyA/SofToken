@@ -294,6 +294,7 @@ const SearchPage: NextPageWithLayout<
 > = () => {
   const { isGridCompact } = useGridSwitcher();
   const { openDrawer } = useDrawer();
+  
   return (
     <>
       <NextSeo
