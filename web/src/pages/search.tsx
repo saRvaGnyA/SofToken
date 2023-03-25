@@ -60,6 +60,7 @@ export function DrawerFilters() {
     </div>
   );
 }
+
 export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {},
@@ -118,42 +119,45 @@ const SearchPage: NextPageWithLayout<
   };
   const getList = async () => {
     var listOfNFT = await NFTcollection.get();
-    var finalList = []
+    var finalList = [];
     listOfNFT.data.forEach(function (item, index) {
       console.log(item.data, index);
       finalList.push({
-        id:index, //needs to be updated
+        id: index, //needs to be updated
         name: item.data.name,
         desc: item.data.description,
-        price: item.data.base_price+" ETH",
+        price: item.data.base_price + ' ETH',
         author: item.data.minter.id,
-        clause: item.data.clause_type
-      })
+        clause: item.data.clause_type,
+      });
     });
     setlistOfNFTs(finalList);
   };
-  const check = async() => {
+  const check = async () => {
     console.log(status);
     console.log(final_price);
     var listOfNFT = await NFTcollection.get();
 
-    var finalList = []
+    var finalList = [];
     listOfNFT.data.forEach(function (item, index) {
-      var price_  = parseFloat(item.data.base_price) 
-      console.log( index, price_ , status , final_price);
-      if(price_>= final_price.min && price_<=final_price.max && item.data.clause_type === status)
-     { finalList.push({
-        id:index, //needs to be updated
-        name: item.data.name,
-        desc: item.data.description,
-        price: item.data.base_price+" ETH",
-        author: item.data.minter.id,
-        clause: item.data.clause_type
-      })}
+      var price_ = parseFloat(item.data.base_price);
+      console.log(index, price_, status, final_price);
+      if (
+        price_ >= final_price.min &&
+        price_ <= final_price.max &&
+        item.data.clause_type === status
+      ) {
+        finalList.push({
+          id: index, //needs to be updated
+          name: item.data.name,
+          desc: item.data.description,
+          price: item.data.base_price + ' ETH',
+          author: item.data.minter.id,
+          clause: item.data.clause_type,
+        });
+      }
     });
     setlistOfNFTs(finalList);
-    
-
   };
   function useGridSwitcher() {
     const [isGridCompact, setIsGridCompact] = useAtom(gridCompactViewAtom);
@@ -314,7 +318,7 @@ const SearchPage: NextPageWithLayout<
         <RadioGroup.Option value="prop">
           {({ checked }) => (
             <span
-              className={`h-30 flex grid-cols-2 cursor-pointer items-center justify-center rounded-lg border border-solid text-center text-sm font-medium  tracking-wide transition-all ${
+              className={`h-30 flex cursor-pointer grid-cols-2 items-center justify-center rounded-lg border border-solid text-center text-sm font-medium  tracking-wide transition-all ${
                 checked
                   ? 'border-brand bg-brand text-white shadow-button'
                   : 'border-gray-200 bg-white text-brand dark:border-gray-700 dark:bg-gray-800 dark:text-white'
@@ -388,6 +392,7 @@ const SearchPage: NextPageWithLayout<
       </>
     );
   }
+
   useEffect(() => {
     getList();
   }, []);
@@ -403,10 +408,7 @@ const SearchPage: NextPageWithLayout<
         Testing
       </Button>
       <Button onClick={check}>Fetch</Button>
-      <NextSeo
-        title="Explore NTF"
-        description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
-      />
+      <NextSeo title="Explore NTFs" description="SofToken" />
       <div className="grid sm:pt-5 2xl:grid-cols-[280px_minmax(auto,_1fr)] 4xl:grid-cols-[320px_minmax(auto,_1fr)]">
         <div className="hidden border-dashed border-gray-200 ltr:border-r ltr:pr-8 rtl:border-l rtl:pl-8 dark:border-gray-700 2xl:block">
           <Filters />
@@ -415,7 +417,7 @@ const SearchPage: NextPageWithLayout<
         <div className="2xl:ltr:pl-10 2xl:rtl:pr-10 4xl:ltr:pl-12 4xl:rtl:pr-12">
           <div className="relative z-10 mb-6 flex items-center justify-between">
             <span className="text-xs font-medium text-gray-900 dark:text-white sm:text-sm">
-              5,686,066 items
+              {listOfNFTs.length} items
             </span>
 
             <div className="flex gap-6 2xl:gap-8">
@@ -452,7 +454,13 @@ const SearchPage: NextPageWithLayout<
                 author={nft.author}
                 authorImage={AuthorImage}
                 price={nft.price}
-                collection='Chromory'
+                collection={
+                  nft.clause === 'prop'
+                    ? 'Properiatary'
+                    : nft.clause === 'royalty'
+                    ? 'Reusable code with Royalty'
+                    : 'Reusable code without Royalty'
+                }
               />
             ))}
           </div>

@@ -99,7 +99,7 @@ export default function NftDetails({ product }: { product: NftDetailsProps }) {
     name,
     description,
     timestamp,
-    minted_slug,
+    clause_type,
     base_price,
     minter,
   } = product;
@@ -127,41 +127,45 @@ export default function NftDetails({ product }: { product: NftDetailsProps }) {
                 <h2 className="text-xl font-medium leading-[1.45em] -tracking-wider text-gray-900 dark:text-white md:text-2xl xl:text-3xl">
                   {name}
                 </h2>
-                <div className="mt-1.5 shrink-0 ltr:ml-3 rtl:mr-3 xl:mt-2">
-                  <NftDropDown />
-                </div>
               </div>
-              {/* <AnchorLink
-                href={minted_slug}
-                className="mt-1.5 inline-flex items-center text-sm -tracking-wider text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white xl:mt-2.5"
-              >
-                Minted on {timestamp}
-                <ArrowLinkIcon className="h-3 w-3 ltr:ml-2 rtl:mr-2" />
-              </AnchorLink> */}
+              <div className="mt-1.5 inline-flex items-center text-sm -tracking-wider text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white xl:mt-2.5">
+                Minted on{' '}
+                {`${new Date(parseInt(timestamp)).toLocaleDateString()}`}
+              </div>
               <div className="mt-4 flex flex-wrap gap-6 pt-0.5 lg:-mx-6 lg:mt-6 lg:gap-0">
                 <div className="shrink-0 border-dashed border-gray-200 dark:border-gray-700 lg:px-6 lg:ltr:border-r lg:rtl:border-l">
                   <h3 className="text-heading-style mb-2 uppercase text-gray-900 dark:text-white">
                     Created By
                   </h3>
-                  {/* {minter && (
-                    <AnchorLink href={minter.username} className="inline-flex">
+                  {minter && (
+                    <AnchorLink
+                      href={`/profile/${minter.username}`}
+                      className="inline-flex"
+                    >
                       <ListCard
-                        item={minter.username}
+                        item={minter}
                         className="rounded-full p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                       />
                     </AnchorLink>
-                  )} */}
+                  )}
                 </div>
                 <div className="shrink-0 lg:px-6">
                   <h3 className="text-heading-style mb-2.5 uppercase text-gray-900 dark:text-white">
                     License
                   </h3>
-                  {/* <AnchorLink href="#" className="inline-flex">
+                  <AnchorLink href="#" className="inline-flex">
                     <ListCard
-                      item={collection}
+                      item={{
+                        name:
+                          clause_type === 'prop'
+                            ? 'Properiatary'
+                            : clause_type === 'royalty'
+                            ? 'Reusable code with Royalty'
+                            : 'Reusable code without Royalty',
+                      }}
                       className="rounded-full p-2 text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                     />
-                  </AnchorLink> */}
+                  </AnchorLink>
                 </div>
               </div>
             </div>
@@ -171,10 +175,6 @@ export default function NftDetails({ product }: { product: NftDetailsProps }) {
                   {
                     title: 'Details',
                     path: 'details',
-                  },
-                  {
-                    title: 'Purchases',
-                    path: 'purchases',
                   },
                   {
                     title: 'Dependencies',
@@ -200,17 +200,6 @@ export default function NftDetails({ product }: { product: NftDetailsProps }) {
                       <FeaturedCard
                         item={bid}
                         key={bid?.id}
-                        className="mb-3 first:mb-0"
-                      />
-                    ))}
-                  </div>
-                </TabPanel>
-                <TabPanel className="focus:outline-none">
-                  <div className="flex flex-col-reverse">
-                    {nftData?.history?.map((item) => (
-                      <FeaturedCard
-                        item={item}
-                        key={item?.id}
                         className="mb-3 first:mb-0"
                       />
                     ))}

@@ -225,7 +225,7 @@ const AuthorProfilePage: NextPageWithLayout<
                 {authorData?.followed_by?.map((item) => (
                   <AnchorLink
                     key={item?.id}
-                    href="/"
+                    href={`/profile/?view=followers`}
                     className="-ml-2 first:ml-0"
                   >
                     <Avatar
@@ -242,7 +242,7 @@ const AuthorProfilePage: NextPageWithLayout<
 
               <div className="mt-4">
                 <AnchorLink
-                  href="/"
+                  href={`/profile/?view=followers`}
                   className="text-sm tracking-tighter text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                 >
                   View All
@@ -260,7 +260,7 @@ const AuthorProfilePage: NextPageWithLayout<
                 {authorData?.followed_by?.map((item) => (
                   <AnchorLink
                     key={item?.id}
-                    href="/"
+                    href={`/profile/?view=following`}
                     className="-ml-2 first:ml-0"
                   >
                     <Avatar
@@ -277,7 +277,7 @@ const AuthorProfilePage: NextPageWithLayout<
 
               <div className="mt-4">
                 <AnchorLink
-                  href="/"
+                  href={`/profile/?view=following`}
                   className="text-sm tracking-tighter text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                 >
                   View All
