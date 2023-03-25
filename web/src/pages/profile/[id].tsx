@@ -279,7 +279,7 @@ const AuthorProfilePage: NextPageWithLayout<
                 {authorData?.followed_by?.map((item) => (
                   <AnchorLink
                     key={item?.id}
-                    href="/"
+                    href={`/profile/${username}/?view=followers`}
                     className="-ml-2 first:ml-0"
                   >
                     <Avatar
@@ -296,7 +296,42 @@ const AuthorProfilePage: NextPageWithLayout<
 
               <div className="mt-4">
                 <AnchorLink
-                  href="/"
+                  href={`/profile/${username}/?view=followers`}
+                  className="text-sm tracking-tighter text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
+                >
+                  View All
+                </AnchorLink>
+              </div>
+            </div>
+
+            {/* Following */}
+            <div className="border-y border-dashed border-gray-200 py-5 text-center dark:border-gray-700 ltr:md:text-left rtl:md:text-right xl:py-6">
+              <div className="mb-2 text-sm font-medium uppercase tracking-wider text-gray-900 dark:text-white">
+                Following
+              </div>
+              <div className="flex justify-center md:justify-start">
+                {/* Followers list */}
+                {authorData?.followed_by?.map((item) => (
+                  <AnchorLink
+                    key={item?.id}
+                    href={`/profile/${username}/?view=following`}
+                    className="-ml-2 first:ml-0"
+                  >
+                    <Avatar
+                      size="sm"
+                      image={item?.avatar?.thumbnail}
+                      alt="Author"
+                      height={28}
+                      width={28}
+                      className="dark:border-gray-500"
+                    />
+                  </AnchorLink>
+                ))}
+              </div>
+
+              <div className="mt-4">
+                <AnchorLink
+                  href={`/profile/${username}/?view=following`}
                   className="text-sm tracking-tighter text-gray-600 transition hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
                 >
                   View All

@@ -422,7 +422,7 @@ const SearchPage: NextPageWithLayout<
         <div className="2xl:ltr:pl-10 2xl:rtl:pr-10 4xl:ltr:pl-12 4xl:rtl:pr-12">
           <div className="relative z-10 mb-6 flex items-center justify-between">
             <span className="text-xs font-medium text-gray-900 dark:text-white sm:text-sm">
-              5,686,066 items
+              {listOfNFTs.length} items
             </span>
 
             <div className="flex gap-6 2xl:gap-8">

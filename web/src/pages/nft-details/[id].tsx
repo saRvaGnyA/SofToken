@@ -25,13 +25,17 @@ const NFTDetailsPage: NextPageWithLayout<
   InferGetStaticPropsType<typeof getStaticProps>
 > = () => {
   const NFTCollectionReference = polybase.collection('NFT');
+  const UserCollectionReference = polybase.collection('User');
   const [item, setItem] = useState({});
   const [url, setUrl] = useState('');
+  const [user, setUser] = useState({});
 
   const initialLoad = async () => {
     const res = await NFTCollectionReference.record(id).get();
-    console.log(res);
+    const res1 = await UserCollectionReference.record(res.data.minter.id).get();
+    res.data.minter = res1.data;
     setItem(res.data);
+    console.log(res.data);
     const resImg = await fetch(
       `https://bafybeihpjhkeuiq3k6nqa3fkgeigeri7iebtrsuyuey5y6vy36n345xmbi.ipfs.w3s.link/${id}`
     );
