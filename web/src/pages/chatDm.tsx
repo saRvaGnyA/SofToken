@@ -345,6 +345,31 @@ const ChatDm: NextPageWithLayout = () => {
     // console.log(`chats:${chats[0]}`);
     // console.log(`chats req:${chatsReq}`);
   };
+  const acceptInvite = async () => {
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    //add user to the group
+
+    const user = await PushAPI.user.get({
+      account: `eip155:${address}`,
+    });
+    console.log(user);
+    // const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
+    //   encryptedPGPPrivateKey: user.encryptedPrivateKey,
+    //   signer: signer,
+    // });
+    const response2 = await PushAPI.chat.getGroupByName({
+      groupName: GrpName,
+    });
+    const response = await PushAPI.chat.approve({
+      status: 'Approved',
+      account: address,
+      senderAddress : response2.chatId // receiver's address or chatId of a group
+    });
+    
+    console.log(response);
+  };
   const addInGrp = async () => {
     const connection = web3Modal && (await web3Modal.connect());
     const provider = new ethers.providers.Web3Provider(connection);
@@ -427,7 +452,7 @@ const ChatDm: NextPageWithLayout = () => {
         }}
         className="mt-4 mb-2 ltr:xs:ml-6 rtl:xs:mr-6 ltr:sm:ml-12 rtl:sm:mr-12"
       />
-      <Button
+      <Button className='mx-2'
         onClick={() => {
           return addInGrp();
         }}
