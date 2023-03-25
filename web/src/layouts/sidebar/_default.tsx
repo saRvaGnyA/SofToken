@@ -20,6 +20,7 @@ import { InfoCircle } from '@/components/icons/info-circle';
 
 //images
 import AuthorImage from '@/assets/images/author.jpg';
+import { UsersIcon } from '@/components/icons/users';
 
 export const menuItems = [
   {
@@ -81,9 +82,14 @@ export const menuItems = [
     href: routes.profile,
   },
   {
-    name: ' Chat',
+    name: 'Chat',
     icon: <ProfileIcon />,
     href: routes.chat,
+  },
+  {
+    name: 'Users',
+    icon: <UsersIcon />,
+    href: routes.users,
   },
   {
     name: 'Vote',

@@ -125,7 +125,7 @@ const AuthorProfilePage: NextPageWithLayout<
       } else if (isProfileComplete && username !== recordGlobal.username) {
         initialLoadById();
       }
-    }
+    }profileImage
   }, [isProfileComplete, username]);
 
   const handleCopyToClipboard = () => {
