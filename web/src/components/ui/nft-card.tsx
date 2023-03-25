@@ -4,6 +4,7 @@ import { Verified } from '@/components/icons/verified';
 import Avatar from '@/components/ui/avatar';
 import { StaticImageData } from 'next/image';
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
 type NFTGridProps = {
   author: string;
@@ -37,7 +38,7 @@ export default function NFTGrid({
   useEffect(() => {
     initialLoad();
   }, []);
-
+ const router = useRouter()
   return (
     <div className="relative overflow-hidden rounded-lg bg-white shadow-card transition-all duration-200 hover:shadow-large dark:bg-light-dark">
       {/* <AnchorLink href="/nft-details" className="relative block w-full pb-full">
@@ -54,7 +55,7 @@ https://bafybeig7e6b4uyqsqh7lwjuuizcnyygekjuajof6myg67yilxdtdcbspua.ipfs.w3s.lin
 
       <div className="p-5">
         <AnchorLink
-          href="/nft-details"
+          href={`/nft-details/${id}`}
           className="text-sm font-medium text-black dark:text-white"
         >
           {name}

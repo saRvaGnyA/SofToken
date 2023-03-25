@@ -72,18 +72,13 @@ export const menuItems = [
     href: routes.createNft,
   },
   {
-    name: 'NFT Details',
-    icon: <DiskIcon />,
-    href: routes.nftDetails,
-  },
-  {
     name: 'Profile',
     icon: <ProfileIcon />,
     href: routes.profile,
   },
   {
     name: 'Chat',
-    icon: <ProfileIcon />,
+    icon: <DiskIcon />,
     href: routes.chat,
   },
   {
