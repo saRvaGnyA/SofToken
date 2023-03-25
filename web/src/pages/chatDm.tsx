@@ -22,8 +22,10 @@ import Web3Modal from 'web3modal';
 import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import { WalletContext } from '@/lib/hooks/use-connect';
+// import {WalletConnect} from '@/components/nft/wallet-connect';
 import routes from '@/config/routes';
 import Chatlist from '@/components/chat/list';
+import Input from '@/components/ui/forms/input';
 
 const sort = [
   { id: 1, name: 'Hot' },
@@ -175,6 +177,8 @@ function Status() {
 const ChatDm: NextPageWithLayout = () => {
   const router = useRouter();
   const query = router.query;
+  var limit_no = 5
+  const [GrpName, setGrpName] = useState("")
   const [chat_msgs, setchat_msgs] = useState([]);
   const [curr_msg, setcurr_msg] = useState('');
   const { address, disconnectWallet, balance } = useContext(WalletContext);
@@ -213,7 +217,7 @@ const ChatDm: NextPageWithLayout = () => {
   const sendMessage = async () => {
     const connection = web3Modal && (await web3Modal.connect());
     const provider = new ethers.providers.Web3Provider(connection);
-    const signer = provider.getSigner();
+    const signer =  provider.getSigner();
     // const signer = library.getSigners(account);
     // const signer = await getProviderOrSigner();
     //   const user = await PushAPI.user.create({
@@ -221,18 +225,22 @@ const ChatDm: NextPageWithLayout = () => {
     // });
     const user = await PushAPI.user.get({
       account: `eip155:${address}`,
+      
     });
-    console.log(user);
     console.log(user.encryptedPrivateKey);
+    console.log("user created successfully");
+    console.log(user);
+
     const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
       encryptedPGPPrivateKey: user.encryptedPrivateKey,
       signer: signer,
     });
-    console.log(curr_msg);
+    console.log("sign created successfully");
+    console.log(curr_msg,address);
     // actual api
     const response = await PushAPI.chat.send({
       messageContent: curr_msg,
-      messageType: 'Text', // can be "Text" | "Image" | "File" | "GIF"
+      messageType: "Text", // can be "Text" | "Image" | "File" | "GIF"
       receiverAddress: `${query.to}`,
       signer: signer,
       pgpPrivateKey: pgpDecryptedPvtKey,
@@ -242,10 +250,11 @@ const ChatDm: NextPageWithLayout = () => {
       account: `eip155:${address}`,
       conversationId: `${query.to}`, // receiver's address or chatId of a group
     });
+    limit_no = (limit_no+1)
     const chatHistory = await PushAPI.chat.history({
       threadhash: conversationHash.threadHash,
       account: `eip155:${address}`,
-      limit: 6,
+      limit: limit_no,
       toDecrypt: true,
       pgpPrivateKey: pgpDecryptedPvtKey,
     });
@@ -318,7 +327,7 @@ const ChatDm: NextPageWithLayout = () => {
     const chatHistory = await PushAPI.chat.history({
       threadhash: conversationHash.threadHash,
       account: `eip155:${address}`,
-      limit: 6,
+      limit: limit_no,
       toDecrypt: true,
       pgpPrivateKey: pgpDecryptedPvtKey,
     });
@@ -336,6 +345,61 @@ const ChatDm: NextPageWithLayout = () => {
     // console.log(`chats:${chats[0]}`);
     // console.log(`chats req:${chatsReq}`);
   };
+  const addInGrp = async () => {
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    //add user to the group
+
+    const user = await PushAPI.user.get({
+      account: `eip155:${address}`,
+    });
+    console.log(user);
+    const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
+      encryptedPGPPrivateKey: user.encryptedPrivateKey,
+      signer: signer,
+    });
+    const response2 = await PushAPI.chat.getGroupByName({
+      groupName: GrpName,
+    });
+    var grp_mem = response2.members;
+    // grp_mem.push(address.toString());
+    var listOfMembers = [query.to];
+    grp_mem.forEach((item, index) => {
+      listOfMembers.push(item.wallet.slice(7));
+    });
+    const response = await PushAPI.chat.updateGroup({
+      chatId: `${response2.chatId}`,
+      groupName: `${response2.groupName}`,
+      groupDescription: `${response2.groupDescription}`,
+      members: listOfMembers,
+      groupImage:
+        'https://plus.unsplash.com/premium_photo-1675873627492-49be1504998c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80',
+      admins: ['0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f'],
+      account: address,
+      pgpPrivateKey: pgpDecryptedPvtKey, //decrypted private key
+    });
+    console.log(response);
+  };
+  const getUser = async () =>{
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    // const signer = library.getSigners(account);
+    // const signer = await getProviderOrSigner();
+    //   const user = await PushAPI.user.create({
+    //     account: '${address}'
+    // });
+    const user2 = await PushAPI.user.get({
+      account: `eip155:${address}`,
+    });
+    console.log(user2);
+    const user1 = await PushAPI.user.get({
+      account: `eip155:0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e`,
+    });
+    console.log(user1);
+  }
+
   useEffect(() => {
     getMessage();
   }, []);
@@ -348,18 +412,35 @@ const ChatDm: NextPageWithLayout = () => {
       />
       <Button
         onClick={() => {
-          return getMessage();
+          return getUser();
         }}
       >
-        Load Messages
+        Get User
       </Button>
-      {/* <Button
+      
+      <Input
+        label="Group Name"
+        useUppercaseLabel={false}
+        placeholder="Enter group name"
+        onChange={(e)=>{
+          setGrpName(e.target.value)
+        }}
+        className="mt-4 mb-2 ltr:xs:ml-6 rtl:xs:mr-6 ltr:sm:ml-12 rtl:sm:mr-12"
+      />
+      <Button
         onClick={() => {
-          return test();
+          return addInGrp();
         }}
       >
-        Test
-      </Button> */}
+        Add To Group
+      </Button>
+      <Button
+        onClick={() => {
+          return acceptInvite();
+        }}
+      >
+        Accept Invite
+      </Button>
       <div className="mx-auto w-full sm:pt-8">
         <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center md:gap-6">
           <div className="flex items-center justify-between gap-4">

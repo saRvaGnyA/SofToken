@@ -25,9 +25,16 @@ import { CONTRACT_ADDRESS, ABI } from '@/constants';
 interface NftFooterProps {
   className?: string;
   price?: number;
+  name_of_nft: string;
+  minter: object;
 }
 
-function NftFooter({ className = 'md:hidden', price }: NftFooterProps) {
+function NftFooter({
+  className = 'md:hidden',
+  price,
+  name_of_nft,
+  minter,
+}: NftFooterProps) {
   const { openModal } = useModal();
   const router = useRouter();
   const { address, disconnectWallet, balance } = useContext(WalletContext);
@@ -40,9 +47,51 @@ function NftFooter({ className = 'md:hidden', price }: NftFooterProps) {
     const tokensContract = new Contract(CONTRACT_ADDRESS, ABI, signer);
     //fetch token id  and curr cost of nft from polybase
     const token_id = 1;
-    const cost_of_nft = 10;
-    const res = await tokensContract.subscribe(token_id, cost_of_nft);
-    console.log(res);
+    var cost_in_eth = 0.001;
+    const cost_of_nft = cost_in_eth * 10 ** 18;
+    //1 ether = 10^18 =>cost of nft
+    // let ethersToWei = ethers.utils.parseUnits(cost_in_eth.toString(), 'ether');
+    // console.log(ethersToWei);
+    // console.log(ethersToWei.toString());
+    // console.log(ethersToWei.toHexString(16));
+    // ethereum
+    //   .request({
+    //     method: 'eth_sendTransaction',
+    //     params: [
+    //       {
+    //         from: address,
+    //         to: CONTRACT_ADDRESS,
+    //         value: ethersToWei.toHexString(16),
+    //       },
+    //     ],
+    //   })
+    //   .then((txHash) => console.log(txHash))
+    //   .catch((error) => console.error(error));
+    // const res = await tokensContract.subscribe(token_id, cost_of_nft);
+    // console.log(res);
+    //Request to admin
+    
+    const user = await PushAPI.user.get({
+      account: `eip155:${address}`,
+    });
+    console.log(user);
+    console.log(user.encryptedPrivateKey);
+    const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
+      encryptedPGPPrivateKey: user.encryptedPrivateKey,
+      signer: signer,
+    });
+    // console.log(curr_msg);
+    // actual api
+    var admin_addr = '0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e'; // minter address fetched from polybase
+    const response = await PushAPI.chat.send({
+      messageContent: `Kindly add me to your group: ${name_of_nft}`,
+      messageType: 'Text', // can be "Text" | "Image" | "File" | "GIF"
+      receiverAddress: `${admin_addr}`,
+      signer: signer,
+      pgpPrivateKey: pgpDecryptedPvtKey,
+    });
+    console.log(response);
+
     router.push({ pathname: '/profile' });
   };
   return (
@@ -208,9 +257,14 @@ export default function NftDetails({ product }: { product: NftDetailsProps }) {
               </ParamTab>
             </div>
           </div>
-          <NftFooter className="hidden md:block" price={base_price} />
+          <NftFooter
+            className="hidden md:block"
+            price={base_price}
+            name_of_nft={name}
+            minter={minter}
+          />
         </div>
-        <NftFooter price={base_price} />
+        <NftFooter price={base_price} name_of_nft={name} minter={minter} />
       </div>
     </div>
   );

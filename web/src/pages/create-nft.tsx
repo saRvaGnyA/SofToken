@@ -115,6 +115,66 @@ const CreateNFTPage: NextPageWithLayout = () => {
     return new Web3Storage({ token: process.env.NEXT_PUBLIC_FILECOIN_API_KEY });
   }
 
+  const getMessage = async () => {
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const user = await PushAPI.user.get({
+      account: `eip155:${address}`,
+    });
+    console.log(user);
+    // console.log(user2.encryptedPrivateKey)
+    const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
+      encryptedPGPPrivateKey: user.encryptedPrivateKey,
+      signer: signer,
+    });
+
+    // const response = await PushAPI.chat.createGroup({
+    //   account: `${address}`, //address of user
+    //   groupName: 'EthGlobal NFT',
+    //   groupDescription: 'This is the oficial group for Push Protocol',
+    //   members: ['0xC7cc983FCD339B1020a48D6f473a5DE663461148'],
+    //   groupImage:
+    //     'https://plus.unsplash.com/premium_photo-1675873627492-49be1504998c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80',
+    //   admins: ['0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f'],
+    //   isPublic: true,
+    //   pgpPrivateKey: pgpDecryptedPvtKey, //decrypted private key
+    // });
+    // console.log(response);
+    const response2 = await PushAPI.chat.getGroupByName({
+      groupName: 'Ani NFT',
+    });
+    console.log(response2);
+    const response3 = await PushAPI.chat.getGroupByName({
+      groupName: 'EthGlobal NFT',
+    });
+    console.log(response3);
+    // const response4 = await PushAPI.chat.approve({
+    //   status: 'Approved',
+    //   account: `${address}`,
+    //   senderAddress : `${response2.chatId}` // receiver's address or chatId of a group
+    // })
+    // const response5 = await PushAPI.chat.approve({
+    //   status: 'Approved',
+    //   account: `${address}`,
+    //   senderAddress : `${response3.chatId}` // receiver's address or chatId of a group
+    // })
+
+    // console.log(response4);
+    // console.log(response5);
+    // setdecrypt_msg(pgpDecryptedPvtKey);
+    // return pgpDecryptedPvtKey;
+
+    // const response = await PushAPI.chat.send({
+    //   messageContent: "Gm gm! It's me... Mario",
+    //   messageType: 'Text', // can be "Text" | "Image" | "File" | "GIF"
+    //   receiverAddress: `${query.to}`,
+    //   signer: signer,
+    //   pgpPrivateKey: pgpDecryptedPvtKey
+    // });
+    // console.log(`chats:${chats[0]}`);
+    // console.log(`chats req:${chatsReq}`);
+  };
   const mintNFT = async () => {
     const client = makeStorageClient();
     const filesCid = await client.put(zipFiles);
@@ -129,7 +189,45 @@ const CreateNFTPage: NextPageWithLayout = () => {
     await mint_Res.wait(1);
 
     const token_id = (await tokensContract.getTotalTokens()) - 1;
+    
+    try {
+      await provider.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: 5}],
+      });
+    console.log("You have succefully switched to Binance Test network")
+    } catch (switchError) {
+      // This error code indicates that the chain has not been added to MetaMask.
+      if (switchError.code === 4902) {
+       console.log("This network is not available in your metamask, please add it")
+      }
+      console.log("Failed to switch to the network")
+    }
+
+    //create group of corrs NFT
+    const user = await PushAPI.user.get({
+      account: `eip155:${address}`,
+    });
+    console.log(user);
+    const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
+      encryptedPGPPrivateKey: user.encryptedPrivateKey,
+      signer: signer,
+    });
+    
+    const response = await PushAPI.chat.createGroup({
+      account: `${address}`, //address of user
+      groupName: name,
+      groupDescription: 'This is the oficial group for Push Protocol',
+      members: ['0xC7cc983FCD339B1020a48D6f473a5DE663461148'],
+      groupImage:'https://plus.unsplash.com/premium_photo-1675873627492-49be1504998c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80',
+      admins: ['0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f'],
+      isPublic: true,
+      pgpPrivateKey: pgpDecryptedPvtKey, //decrypted private key
+    });
+    console.log(response);
+
     //store token id and nft details on polybase
+
 
     await collectionReference.create([
       token_id.toString(),

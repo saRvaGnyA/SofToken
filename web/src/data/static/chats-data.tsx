@@ -12,7 +12,7 @@ export const ChatsData = [
   {
     id: 2,
     from: 'USDT',
-    to: '0xb8D2a8ea54F71294f50e7088768Bd96eBED17946',
+    to: '0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e',
     earned: '0',
     apr: '25.20%',
     name: '',
@@ -22,7 +22,7 @@ export const ChatsData = [
   {
     id: 3,
     from: 'USDC',
-    to: '0xe8658Dddc779097882A0f963f2C65fACBBa51ed1',
+    to: "0xb8D2a8ea54F71294f50e7088768Bd96eBED17946",
     earned: '0',
     apr: '33.73%',
     name: '',

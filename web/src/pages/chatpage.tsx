@@ -343,26 +343,26 @@ const ChatPage: NextPageWithLayout = () => {
     // });
     // console.log(response);
     const response2 = await PushAPI.chat.getGroupByName({
-      groupName: 'Ani NFT',
+      groupName: "Ananya's Software",
     });
     console.log(response2);
-    const response3 = await PushAPI.chat.getGroupByName({
-      groupName: 'EthGlobal NFT',
-    });
-    console.log(response3);
-    // const response4 = await PushAPI.chat.approve({
-    //   status: 'Approved',
-    //   account: `${address}`,
-    //   senderAddress : `${response2.chatId}` // receiver's address or chatId of a group
-    // })
-    // const response5 = await PushAPI.chat.approve({
-    //   status: 'Approved',
-    //   account: `${address}`,
-    //   senderAddress : `${response3.chatId}` // receiver's address or chatId of a group
-    // })
+    // const response3 = await PushAPI.chat.getGroupByName({
+    //   groupName: 'EthGlobal NFT',
+    // });
+    // console.log(response3);
+    const response4 = await PushAPI.chat.approve({
+      status: 'Approved',
+      account: `0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f`,
+      senderAddress : `${response2.chatId}` // receiver's address or chatId of a group
+    })
+    const response5 = await PushAPI.chat.approve({
+      status: 'Approved',
+      account: `0xC7cc983FCD339B1020a48D6f473a5DE663461148`,
+      senderAddress : `${response2.chatId}` // receiver's address or chatId of a group
+    })
 
-    // console.log(response4);
-    // console.log(response5);
+    console.log(response4);
+    console.log(response5);
     // setdecrypt_msg(pgpDecryptedPvtKey);
     // return pgpDecryptedPvtKey;
 
