@@ -74,9 +74,9 @@ Smart Contract: `SofToken.sol
 `
 Deployment Network - Scroll Alpha Testnet
 
-Contract Address: 0xC4644e673d974e59e373EdFe6A25038DcB47dA59
+Contract Address: 0x60Bf1723BA636b47F7F7765247DbCdA7eC3E52e2
 
-BlockScout Scroll Alpha Testnet link: [Link](https://blockscout.scroll.io/address/0xC4644e673d974e59e373EdFe6A25038DcB47dA59)
+BlockScout Scroll Alpha Testnet link: [Link](https://blockscout.scroll.io/address/0x60Bf1723BA636b47F7F7765247DbCdA7eC3E52e2)
 
 
 Smart Contract: `functionsConsumer.sol`
