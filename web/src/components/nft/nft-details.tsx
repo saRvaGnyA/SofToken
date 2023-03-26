@@ -31,6 +31,7 @@ interface NftFooterProps {
   price?: number;
   name_of_nft: string;
   minter: object;
+  tok_id: string;
 }
 
 function NftFooter({
@@ -38,66 +39,14 @@ function NftFooter({
   price,
   name_of_nft,
   minter,
+  tok_id
 }: NftFooterProps) {
   const { openModal } = useModal();
   const router = useRouter();
   const { address, disconnectWallet, balance } = useContext(WalletContext);
   const web3Modal =
     typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
-  const subscribeNFT = async () => {
-    const connection = web3Modal && (await web3Modal.connect());
-    const provider = new ethers.providers.Web3Provider(connection);
-    const signer = provider.getSigner();
-    const tokensContract = new Contract(CONTRACT_ADDRESS, ABI, signer);
-    //fetch token id  and curr cost of nft from polybase
-    const token_id = 1;
-    var cost_in_eth = 0.001;
-    const cost_of_nft = cost_in_eth * 10 ** 18;
-    //1 ether = 10^18 =>cost of nft
-    // let ethersToWei = ethers.utils.parseUnits(cost_in_eth.toString(), 'ether');
-    // console.log(ethersToWei);
-    // console.log(ethersToWei.toString());
-    // console.log(ethersToWei.toHexString(16));
-    // ethereum
-    //   .request({
-    //     method: 'eth_sendTransaction',
-    //     params: [
-    //       {
-    //         from: address,
-    //         to: CONTRACT_ADDRESS,
-    //         value: ethersToWei.toHexString(16),
-    //       },
-    //     ],
-    //   })
-    //   .then((txHash) => console.log(txHash))
-    //   .catch((error) => console.error(error));
-    // const res = await tokensContract.subscribe(token_id, cost_of_nft);
-    // console.log(res);
-    //Request to admin
-
-    const user = await PushAPI.user.get({
-      account: `eip155:${address}`,
-    });
-    console.log(user);
-    console.log(user.encryptedPrivateKey);
-    const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
-      encryptedPGPPrivateKey: user.encryptedPrivateKey,
-      signer: signer,
-    });
-    // console.log(curr_msg);
-    // actual api
-    var admin_addr = '0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e'; // minter address fetched from polybase
-    const response = await PushAPI.chat.send({
-      messageContent: `Kindly add me to your group: ${name_of_nft}`,
-      messageType: 'Text', // can be "Text" | "Image" | "File" | "GIF"
-      receiverAddress: `${admin_addr}`,
-      signer: signer,
-      pgpPrivateKey: pgpDecryptedPvtKey,
-    });
-    console.log(response);
-
-    router.push({ pathname: '/profile' });
-  };
+  
   const query = router.query;
 
   const [tokenId, setTokenId] = useState(0);
@@ -115,17 +64,17 @@ function NftFooter({
   var rate_NFT = 0
   const call = async () => {
     try {
-      const data = await vote([1, rate_NFT]);
+      const data = await vote([tok_id, rate_NFT]);
       console.info('contract call successs', data);
     } catch (err) {
       console.error('contract call failure', err);
     }
   };
-  const getRateFunction = async (tok) => {
+  const getRateFunction = async () => {
     console.log('Started');
-    console.log(tok);
+    console.log(tok_id);
     try {
-      const data = await getRate([1]);
+      const data = await getRate([tok_id]);
       console.log(data.toString());
       setRate0(parseInt(data['_hex'], 16));
       console.info('contract call successs', parseInt(data['_hex'], 16));
@@ -206,6 +155,61 @@ function NftFooter({
     getRateFunction(num);
     
   };
+  const subscribeNFT = async () => {
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const tokensContract = new Contract(CONTRACT_ADDRESS, ABI, signer);
+    //fetch token id  and curr cost of nft from polybase
+    const token_id = parseInt(tok_id);
+    const cost_of_nft = (parseFloat(curr_price) * 10 ** 18).toString();
+    //1 ether = 10^18 =>cost of nft
+    let ethersToWei = ethers.utils.parseUnits(parseFloat(curr_price).toString(), 'ether');
+    console.log(ethersToWei);
+    console.log(ethersToWei.toString());
+    console.log(ethersToWei.toHexString(16));
+    ethereum
+      .request({
+        method: 'eth_sendTransaction',
+        params: [
+          {
+            from: address,
+            to: CONTRACT_ADDRESS,
+            value: ethersToWei.toHexString(16),
+          },
+        ],
+      })
+      .then((txHash) => console.log(txHash))
+      .catch((error) => console.error(error));
+    const res = await tokensContract.subscribe(token_id, cost_of_nft);
+    console.log(res);
+    //Request to admin
+
+    const user = await PushAPI.user.get({
+      account: `eip155:${address}`,
+    });
+    console.log(user);
+    console.log(user.encryptedPrivateKey);
+    const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
+      encryptedPGPPrivateKey: user.encryptedPrivateKey,
+      signer: signer,
+    });
+    // console.log(curr_msg);
+    
+    // actual api
+    var admin_addr = '0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e'; // minter address fetched from polybase
+    const response = await PushAPI.chat.send({
+      messageContent: `Kindly add me to your group: ${name_of_nft}`,
+      messageType: 'Text', // can be "Text" | "Image" | "File" | "GIF"
+      receiverAddress: `${admin_addr}`,
+      signer: signer,
+      pgpPrivateKey: pgpDecryptedPvtKey,
+    });
+    console.log(response);
+    
+
+    // router.push({ pathname: '/profile' });
+  };
 
   useEffect(() => {
     initialLoad();
@@ -263,6 +267,7 @@ type NftDetailsProps = {
   minted_slug: string;
   base_price: number;
   minter: object;
+  tok_id: string;
 };
 
 export default function NftDetails({ product }: { product: NftDetailsProps }) {
@@ -274,6 +279,7 @@ export default function NftDetails({ product }: { product: NftDetailsProps }) {
     clause_type,
     base_price,
     minter,
+    tok_id
   } = product;
   return (
     <div className="flex flex-grow">
@@ -385,9 +391,10 @@ export default function NftDetails({ product }: { product: NftDetailsProps }) {
             price={base_price}
             name_of_nft={name}
             minter={minter}
+            tok_id={tok_id}
           />
         </div>
-        <NftFooter price={base_price} name_of_nft={name} minter={minter} />
+        <NftFooter price={base_price} tok_id={tok_id} name_of_nft={name} minter={minter} />
       </div>
     </div>
   );
