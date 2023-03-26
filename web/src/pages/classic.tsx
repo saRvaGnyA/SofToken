@@ -27,10 +27,7 @@ const ClassicPage: NextPageWithLayout<
 > = () => {
   return (
     <>
-      <NextSeo
-        title="Criptic Classic Demo"
-        description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
-      />
+      <NextSeo title="Criptic Classic Demo" description="SofToken" />
       <div className="flex flex-wrap">
         <div className="mb-8 w-full sm:mb-0  ">
           <CoinSlider coins={coinSlideData} />

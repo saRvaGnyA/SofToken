@@ -23,17 +23,11 @@ const sort = [
   { id: 5, name: 'Latest' },
 ];
 
-
 const ChatInfoPage: NextPageWithLayout = () => {
   return (
     <>
-      <NextSeo
-        title="Farms"
-        description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
-      />
+      <NextSeo title="Farms" description="SofToken" />
       <div className="mx-auto w-full sm:pt-8">
-        
-
         <div className="mb-3 hidden grid-cols-3 gap-6 rounded-lg bg-white shadow-card dark:bg-light-dark sm:grid lg:grid-cols-5">
           <span className="px-8 py-6 text-sm tracking-wider text-gray-500 dark:text-gray-300">
             Pool

@@ -89,26 +89,21 @@ const NotificationPage: NextPageWithLayout = () => {
     const notifications = await PushAPI.user.getFeeds({
       user: `eip155:5:${address}`, // user address in CAIP
       env: 'staging',
-      
     });
     console.log(notifications);
-    setnotifications(notifications)
-    return notifications
-    
+    setnotifications(notifications);
+    return notifications;
   };
-  const [notifications, setnotifications] = useState([])
+  const [notifications, setnotifications] = useState([]);
   // setnotifications(getNotif())
   // getNotif()
   useEffect(() => {
-    getNotif()
-  }, [])
-  
+    getNotif();
+  }, []);
+
   return (
     <>
-      <NextSeo
-        title="Notifications"
-        description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
-      />
+      <NextSeo title="Notifications" description="SofToken" />
       <div className="mx-auto w-[660px] max-w-full">
         <div className="mb-7 flex items-center justify-between gap-6">
           <h2 className="text-center text-lg font-medium text-gray-900 dark:text-white sm:text-xl lg:text-2xl">
@@ -125,13 +120,13 @@ const NotificationPage: NextPageWithLayout = () => {
         </div>
 
         {notifications.map((notification) => {
-          console.log(notification.notification.title)
-          console.log(notification.notification.body)
+          console.log(notification.notification.title);
+          console.log(notification.notification.body);
           const notif = {
             id: notification.sid,
             title: notification.notification.title,
-            body :notification.notification.body
-          }
+            body: notification.notification.body,
+          };
           const notificationItem = notif as NotificationCardProps;
           return (
             // <div>hello</div>

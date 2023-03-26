@@ -47,8 +47,8 @@ const chat: NextPageWithLayout<
       //   console.log(files[0].name)
       var pic = files?.map((file: any) =>
         Object.assign(file, {
-            preview: URL.createObjectURL(file),
-        //   source: `https://ipfs.io/ipfs/${file.cid}/`,
+          preview: URL.createObjectURL(file),
+          //   source: `https://ipfs.io/ipfs/${file.cid}/`,
         })
       );
 
@@ -62,9 +62,9 @@ const chat: NextPageWithLayout<
     var usersList = await userRef.get();
     var fetched_users = [];
     console.log(`list of pics: ${listOfPics}`);
-   
+
     usersList.data.forEach(async (item, index) => {
-      console.log(`for every pic : ${listOfPics[index]}`)
+      console.log(`for every pic : ${listOfPics[index]}`);
       fetched_users.push({
         id: item.data.id,
         author: item.data.username,
@@ -87,28 +87,26 @@ const chat: NextPageWithLayout<
 
   return (
     <>
-      <NextSeo
-        title="Chat"
-        description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
-      />
+      <NextSeo title="Users" description="SofToken" />
       {/* <Button onClick={getUsers}>Get Users</Button> */}
       <div
         className={
           'grid gap-5 sm:grid-cols-2 md:grid-cols-3 3xl:grid-cols-4 4xl:grid-cols-5'
         }
       >
-        {listOfPics&&  users.map((userObj) => (
-          <UserGrid
-            key={userObj.id}
-            id={userObj.id}
-            name={userObj.name}
-            image={userObj.image}
-            author={userObj.author}
-            authorImage={AuthorImage}
-            price={userObj.price}
-            collection={userObj.collection}
-          />
-        ))}
+        {listOfPics &&
+          users.map((userObj) => (
+            <UserGrid
+              key={userObj.id}
+              id={userObj.id}
+              name={userObj.name}
+              image={userObj.image}
+              author={userObj.author}
+              authorImage={AuthorImage}
+              price={userObj.price}
+              collection={userObj.collection}
+            />
+          ))}
       </div>
 
       {/* <NftDetails product={nftData} /> */}

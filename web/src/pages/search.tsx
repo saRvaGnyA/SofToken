@@ -294,14 +294,14 @@ function Filters() {
       <Collapse label="Price Range" initialOpen>
         <PriceRange />
       </Collapse>
-      <Collapse label="Collection" initialOpen>
+      {/* <Collapse label="Collection" initialOpen>
         <CollectionSelect onSelect={(value) => console.log(value)} />
       </Collapse>
       <Collapse label="Dependency" initialOpen>
         <DependencySelect
           onSelect={(value) => console.log(`this is ${value}`)}
         />
-      </Collapse>
+      </Collapse> */}
     </>
   );
 }
@@ -360,7 +360,7 @@ const SearchPage: NextPageWithLayout<
     listOfNFT.data.forEach(function (item, index) {
       console.log(item.data, index);
       finalList.push({
-        id: item.data.id,  //needs to be updated
+        id: item.data.id, //needs to be updated
         name: item.data.name,
         desc: item.data.description,
         price: item.data.base_price + ' ETH',
@@ -392,7 +392,7 @@ const SearchPage: NextPageWithLayout<
           author: item.data.minter.id,
           clause: item.data.clause_type,
         });
-        console.log(item.data.id)
+        console.log(item.data.id);
       }
     });
     setlistOfNFTs(finalList);
@@ -413,10 +413,7 @@ const SearchPage: NextPageWithLayout<
         Testing
       </Button> */}
       <Button onClick={check}>Fetch</Button>
-      <NextSeo
-        title="Explore NTF"
-        description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
-      />
+      <NextSeo title="Explore NTF" description="SofToken" />
       <div className="grid sm:pt-5 2xl:grid-cols-[280px_minmax(auto,_1fr)] 4xl:grid-cols-[320px_minmax(auto,_1fr)]">
         <div className="hidden border-dashed border-gray-200 ltr:border-r ltr:pr-8 rtl:border-l rtl:pl-8 dark:border-gray-700 2xl:block">
           <Filters listOfNFTs={listOfNFTs} />

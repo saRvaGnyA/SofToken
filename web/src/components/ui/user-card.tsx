@@ -76,7 +76,7 @@ export default function UserGrid({
 
       <div className="p-5">
         <AnchorLink
-          href="/nft-details"
+          href={`/profile/${author}`}
           className="text-sm font-medium text-black dark:text-white"
         >
           {name}

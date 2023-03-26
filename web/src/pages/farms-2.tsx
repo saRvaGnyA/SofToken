@@ -164,10 +164,7 @@ function Status() {
 const FarmsPage: NextPageWithLayout = () => {
   return (
     <>
-      <NextSeo
-        title="Farms"
-        description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
-      />
+      <NextSeo title="Farms" description="SofToken" />
       <div className="mx-auto w-full sm:pt-8">
         <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center md:gap-6">
           <div className="flex items-center justify-between gap-4">

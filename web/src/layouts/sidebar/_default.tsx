@@ -39,6 +39,11 @@ export const menuItems = [
     href: routes.profile,
   },
   {
+    name: 'Update Profile',
+    icon: <InfoCircle />,
+    href: routes.update,
+  },
+  {
     name: 'Chat',
     icon: <DiskIcon />,
     href: routes.chat,

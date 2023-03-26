@@ -47,11 +47,7 @@ function NftFooter({
   const { address, disconnectWallet, balance } = useContext(WalletContext);
   const web3Modal =
     typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
-<<<<<<< HEAD
   const [isDone, setisDone] = useState(false);
-=======
-
->>>>>>> 4181b0d74d187918c14a1a006daeb2b0a5d876a7
   const query = router.query;
 
   const [tokenId, setTokenId] = useState(0);
@@ -152,7 +148,7 @@ function NftFooter({
     const sdk = ThirdwebSDK.fromSigner(signer);
 
     const contract = await sdk.getContractFromAbi(
-      '0x9d7B3B7F55743bBA41cc4Cc21d7D1660e43411e1',
+      '0x744b61418D77d4C4AA953cD36403D353F7Cd947e',
       DIFF_ABI
     );
     console.log(contract);
@@ -210,7 +206,7 @@ function NftFooter({
     // console.log(curr_msg);
 
     // actual api
-    var admin_addr = '0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e'; // minter address fetched from polybase
+    var admin_addr = '0xAcde3c6984bb9c8C8020eAFf45A92a0226f954Ef'; // minter address fetched from polybase
     const response = await PushAPI.chat.send({
       messageContent: `Kindly add me to your group: ${name_of_nft}`,
       messageType: 'Text', // can be "Text" | "Image" | "File" | "GIF"
@@ -300,8 +296,8 @@ function NftFooter({
         className
       )}
     >
-      {/* <Button onClick={getRateFunction}>Testing</Button>
-      <Button onClick={downloadNft}>Dwnld</Button> */}
+      <Button onClick={getRateFunction}>Testing</Button>
+      {/* <Button onClick={downloadNft}>Dwnld</Button> */}
       <Button
         onClick={async () => {
           await call();

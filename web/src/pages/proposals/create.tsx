@@ -253,10 +253,7 @@ const CreateProposalPage: NextPageWithLayout = () => {
   }
   return (
     <>
-      <NextSeo
-        title="Create Proposal"
-        description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
-      />
+      <NextSeo title="Create Proposal" description="SofToken" />
       <section className="mx-auto w-full max-w-[1160px] text-sm sm:pt-10 4xl:py-16">
         <header className="mb-10 flex flex-col gap-4 rounded-lg bg-white p-5 py-6 shadow-card dark:bg-light-dark xs:p-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-4 xs:gap-3 xl:gap-4">

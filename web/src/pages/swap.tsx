@@ -13,10 +13,7 @@ const SwapPage: NextPageWithLayout = () => {
   let [toggleCoin, setToggleCoin] = useState(false);
   return (
     <>
-      <NextSeo
-        title="Farms"
-        description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
-      />
+      <NextSeo title="Farms" description="SofToken" />
       <Trade>
         <div className="mb-5 border-b border-dashed border-gray-200 pb-5 dark:border-gray-800 xs:mb-7 xs:pb-6">
           <div

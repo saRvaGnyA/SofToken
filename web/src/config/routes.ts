@@ -16,6 +16,7 @@ const routes = {
   createProposal: '/proposals/create',
   charts: '/charts',
   profile: '/profile',
+  update:'/update-profile',
   users:'/users',
   chat:'/chat',
   portfolio: '/profile?view=portfolio',

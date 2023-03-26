@@ -5,26 +5,26 @@ import Avatar from '@/components/ui/avatar';
 import { WalletContext } from '@/lib/hooks/use-connect';
 
 export const collectionList = [
-  {
-    name: 'Iron flower',
-    value: 'iron-flower',
-  },
-  {
-    name: 'Creative web',
-    value: 'creative-web',
-  },
-  {
-    name: 'Art in binary',
-    value: 'art-in-binary',
-  },
-  {
-    name: 'Sound of wave',
-    value: 'sound-of-wave',
-  },
-  {
-    name: 'Pixel art',
-    value: 'pixel-art',
-  },
+  // {
+  //   name: 'Iron flower',
+  //   value: 'iron-flower',
+  // },
+  // {
+  //   name: 'Creative web',
+  //   value: 'creative-web',
+  // },
+  // {
+  //   name: 'Art in binary',
+  //   value: 'art-in-binary',
+  // },
+  // {
+  //   name: 'Sound of wave',
+  //   value: 'sound-of-wave',
+  // },
+  // {
+  //   name: 'Pixel art',
+  //   value: 'pixel-art',
+  // },
 ];
 
 interface DependencySelectTypes {

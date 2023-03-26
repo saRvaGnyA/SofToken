@@ -150,7 +150,7 @@ function SortList() {
   // const signer = library.getSigner(account);
   return (
     <div className="relative w-full md:w-auto">
-      <Button
+      {/* <Button
         onClick={() => {
           return getMessage();
         }}
@@ -163,7 +163,7 @@ function SortList() {
         }}
       >
         Test
-      </Button>
+      </Button> */}
       <Listbox value={selectedItem} onChange={setSelectedItem}>
         <Listbox.Button className="flex h-11 w-full items-center justify-between rounded-lg bg-gray-100 px-4 text-sm text-gray-900 dark:bg-light-dark dark:text-white md:w-36 lg:w-40 xl:w-56">
           {selectedItem.name}
@@ -468,10 +468,7 @@ const ChatPage: NextPageWithLayout = () => {
 
   return (
     <>
-      <NextSeo
-        title="Farms"
-        description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
-      />
+      <NextSeo title="Farms" description="SofToken" />
       <div className="mx-auto w-full sm:pt-8">
         <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center md:gap-6">
           <div className="flex items-center justify-between gap-4">
@@ -540,10 +537,10 @@ const ChatPage: NextPageWithLayout = () => {
             <SortList />
           </div>
         </div>
-        <Button onClick={getMessage}>New Test</Button>
+        {/* <Button onClick={getMessage}>New Test</Button>
         <Button onClick={checkNotif}>Notif</Button>
         <Button onClick={sendNotif}>Send Notif</Button>
-        <Button onClick={getNotif}>Get Notif</Button>
+        <Button onClick={getNotif}>Get Notif</Button> */}
         {/* 
         <div className="mb-3 hidden grid-cols-3 gap-6 rounded-lg bg-white shadow-card dark:bg-light-dark sm:grid lg:grid-cols-5">
           <span className="px-8 py-6 text-sm tracking-wider text-gray-500 dark:text-gray-300">

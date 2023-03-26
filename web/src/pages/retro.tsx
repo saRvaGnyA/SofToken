@@ -21,10 +21,7 @@ const Retro: NextPageWithLayout<
 > = () => {
   return (
     <>
-      <NextSeo
-        title="Criptic - Retro"
-        description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
-      />
+      <NextSeo title="Criptic - Retro" description="SofToken" />
       <div className="retro-container">
         <div>
           <ComparisonChart />

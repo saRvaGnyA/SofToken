@@ -139,6 +139,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
         setAddress(accounts[0]);
         const provider = new ethers.providers.Web3Provider(connection);
         getBalance(provider, accounts[0]);
+        
       } else {
         disconnectWallet();
       }

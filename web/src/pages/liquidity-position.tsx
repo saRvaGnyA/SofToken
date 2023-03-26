@@ -13,10 +13,7 @@ const LiquidityPositionPage: NextPageWithLayout = () => {
   let [isExpand, setIsExpand] = useState(false);
   return (
     <>
-      <NextSeo
-        title="Liquidity Position"
-        description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
-      />
+      <NextSeo title="Liquidity Position" description="SofToken" />
       <div className="mx-auto w-full max-w-lg text-sm">
         <h3 className="mb-4 text-lg font-medium text-gray-900 dark:text-white sm:mb-6 sm:text-2xl">
           My Liquidity position

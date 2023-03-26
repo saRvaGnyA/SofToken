@@ -177,8 +177,8 @@ function Status() {
 const ChatDm: NextPageWithLayout = () => {
   const router = useRouter();
   const query = router.query;
-  var limit_no = 5
-  const [GrpName, setGrpName] = useState("")
+  var limit_no = 0;
+  const [GrpName, setGrpName] = useState('');
   const [chat_msgs, setchat_msgs] = useState([]);
   const [curr_msg, setcurr_msg] = useState('');
   const { address, disconnectWallet, balance } = useContext(WalletContext);
@@ -217,7 +217,7 @@ const ChatDm: NextPageWithLayout = () => {
   const sendMessage = async () => {
     const connection = web3Modal && (await web3Modal.connect());
     const provider = new ethers.providers.Web3Provider(connection);
-    const signer =  provider.getSigner();
+    const signer = provider.getSigner();
     // const signer = library.getSigners(account);
     // const signer = await getProviderOrSigner();
     //   const user = await PushAPI.user.create({
@@ -225,22 +225,21 @@ const ChatDm: NextPageWithLayout = () => {
     // });
     const user = await PushAPI.user.get({
       account: `eip155:${address}`,
-      
     });
     console.log(user.encryptedPrivateKey);
-    console.log("user created successfully");
+    console.log('user created successfully');
     console.log(user);
 
     const pgpDecryptedPvtKey = await PushAPI.chat.decryptPGPKey({
       encryptedPGPPrivateKey: user.encryptedPrivateKey,
       signer: signer,
     });
-    console.log("sign created successfully");
-    console.log(curr_msg,address);
+    console.log('sign created successfully');
+    console.log(curr_msg, address);
     // actual api
     const response = await PushAPI.chat.send({
       messageContent: curr_msg,
-      messageType: "Text", // can be "Text" | "Image" | "File" | "GIF"
+      messageType: 'Text', // can be "Text" | "Image" | "File" | "GIF"
       receiverAddress: `${query.to}`,
       signer: signer,
       pgpPrivateKey: pgpDecryptedPvtKey,
@@ -250,7 +249,7 @@ const ChatDm: NextPageWithLayout = () => {
       account: `eip155:${address}`,
       conversationId: `${query.to}`, // receiver's address or chatId of a group
     });
-    limit_no = (limit_no+1)
+    limit_no = limit_no + 1;
     const chatHistory = await PushAPI.chat.history({
       threadhash: conversationHash.threadHash,
       account: `eip155:${address}`,
@@ -365,9 +364,9 @@ const ChatDm: NextPageWithLayout = () => {
     const response = await PushAPI.chat.approve({
       status: 'Approved',
       account: address,
-      senderAddress : response2.chatId // receiver's address or chatId of a group
+      senderAddress: response2.chatId, // receiver's address or chatId of a group
     });
-    
+
     console.log(response);
   };
   const addInGrp = async () => {
@@ -406,7 +405,7 @@ const ChatDm: NextPageWithLayout = () => {
     });
     console.log(response);
   };
-  const getUser = async () =>{
+  const getUser = async () => {
     const connection = web3Modal && (await web3Modal.connect());
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
@@ -423,7 +422,7 @@ const ChatDm: NextPageWithLayout = () => {
       account: `eip155:0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e`,
     });
     console.log(user1);
-  }
+  };
 
   useEffect(() => {
     getMessage();
@@ -431,10 +430,7 @@ const ChatDm: NextPageWithLayout = () => {
 
   return (
     <>
-      <NextSeo
-        title="querys"
-        description="Criptic - React Next Web3 NFT Crypto Dashboard Template"
-      />
+      <NextSeo title="querys" description="SofToken" />
       <Button
         onClick={() => {
           return getUser();
@@ -442,17 +438,18 @@ const ChatDm: NextPageWithLayout = () => {
       >
         Get User
       </Button>
-      
+
       <Input
         label="Group Name"
         useUppercaseLabel={false}
         placeholder="Enter group name"
-        onChange={(e)=>{
-          setGrpName(e.target.value)
+        onChange={(e) => {
+          setGrpName(e.target.value);
         }}
         className="mt-4 mb-2 ltr:xs:ml-6 rtl:xs:mr-6 ltr:sm:ml-12 rtl:sm:mr-12"
       />
-      <Button className='mx-2'
+      <Button
+        className="mx-2"
         onClick={() => {
           return addInGrp();
         }}
