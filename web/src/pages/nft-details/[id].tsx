@@ -54,7 +54,7 @@ const NFTDetailsPage: NextPageWithLayout<
   return (
     <>
       <NextSeo title="NFT Details" description="SofToken" />
-      <NftDetails product={{ ...item, image: url }} />
+      <NftDetails product={{ ...item, image: url, tok_id: id }} />
     </>
   );
 };
