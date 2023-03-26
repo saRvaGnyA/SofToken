@@ -5,7 +5,9 @@
 ## Secure & Efficient solution for Software Licensing and Royalty using NFTs
 SofToken is a blockchain-based application that allows users to Mint a NFT for their software and apply a license on it. Other users have a option to subscribe to the minted NFT and use it to build their own software. Different types of restrictions can be applied to the usage of a software before it is minted.
 
-[Demo Video](https://youtu.be/Y7W1sl1kC9A)
+[Demo Video](https://youtu.be/Y7W1sl1kC9A)  
+
+[ETH Global - Scaling Ethereum 2023 Submission](https://ethglobal.com/showcase/softoken-4vh70)
 
 ## ⚒️ Working of SofToken
 
