@@ -19,18 +19,18 @@ SofToken is a blockchain-based application that allows users to Mint a NFT for t
     - ![image](https://user-images.githubusercontent.com/90528630/227760594-4ecbd8d5-dd14-4b2d-a8fd-388e6fdc3eaa.png)
 
     - proprierty executable : 
-        - Only the executable file of the software minted (NFT A) is shared with User B
-        - User B cannot mint his own NFT using software A.
+        - Only the executable file of the software minted (NFT A) is shared with User 2
+        - User 2 cannot mint his own NFT B using NFT software A.
      
     - Reusable & Modifiable (without Royalty):
         - Code files are shared with the user
-        - User can mint his own NFT using the software as a dependent NFT.
-        - None of the total amount User B receives from his subscribers is given to User A.
+        - User can mint his own NFT B using the software as a dependent NFT A.
+        - None of the total amount User 2 receives from his subscribers is given to User 1.
 
     - Reusable & Modifiable (With Royalty):
         - Code files are shared with the user
-        - User can mint his own NFT using the software as a dependent NFT.
-        - 10% of the total amount User B receives from his subscribers is given to User A as royalty fee.
+        - User can mint his own NFT B using the software as a dependent NFT A.
+        - 10% of the total amount User 2 receives from his subscribers is given to User 1 as royalty fee.
 - User can Filter out NFT Softwares based on Price, Ratings etc.
 - User can give his own rating to the software.
 - Live Price of the NFT is determined by the Ratings it gets.
