@@ -148,7 +148,7 @@ function NftFooter({
     const sdk = ThirdwebSDK.fromSigner(signer);
 
     const contract = await sdk.getContractFromAbi(
-      '0x744b61418D77d4C4AA953cD36403D353F7Cd947e',
+      '0x9d7B3B7F55743bBA41cc4Cc21d7D1660e43411e1',
       DIFF_ABI
     );
     console.log(contract);
@@ -319,15 +319,11 @@ function NftFooter({
         </div>
 
         <div className="grid grid-cols-2 gap-3">
-          {!isDone ? (
-            <Button shape="rounded" onClick={subscribeNFT}>
-              {`BUY FOR ${curr_price} ETH`}
-            </Button>
-          ) : (
+          
             <Button shape="rounded" onClick={downloadNft}>
               {`Download Source Code`}
             </Button>
-          )}
+          
           <Button
             shape="rounded"
             variant="solid"

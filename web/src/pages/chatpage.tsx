@@ -468,7 +468,7 @@ const ChatPage: NextPageWithLayout = () => {
 
   return (
     <>
-      <NextSeo title="Farms" description="SofToken" />
+      <NextSeo title="Chat" description="SofToken" />
       <div className="mx-auto w-full sm:pt-8">
         <div className="mb-6 flex flex-col justify-between gap-4 md:flex-row md:items-center md:gap-6">
           <div className="flex items-center justify-between gap-4">

@@ -177,7 +177,7 @@ function Status() {
 const ChatDm: NextPageWithLayout = () => {
   const router = useRouter();
   const query = router.query;
-  var limit_no = 0;
+  var limit_no = 1;
   const [GrpName, setGrpName] = useState('');
   const [chat_msgs, setchat_msgs] = useState([]);
   const [curr_msg, setcurr_msg] = useState('');
@@ -438,6 +438,13 @@ const ChatDm: NextPageWithLayout = () => {
       >
         Get User
       </Button>
+      {/* <Button
+        onClick={() => {
+          return getUser();
+        }}
+      >
+        Load Messages
+      </Button> */}
 
       <Input
         label="Group Name"
