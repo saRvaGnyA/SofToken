@@ -66,7 +66,7 @@ https://bafybeig7e6b4uyqsqh7lwjuuizcnyygekjuajof6myg67yilxdtdcbspua.ipfs.w3s.lin
           </div>
         </div>
         <div className="mt-4 text-lg font-medium text-gray-900 dark:text-white">
-          {price}
+          Base Price: {price}
         </div>
       </div>
     </div>

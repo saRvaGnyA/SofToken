@@ -15,6 +15,7 @@ import TopupButton from '@/components/ui/topup-button';
 //images
 import AuthorImage from '@/assets/images/author.jpg';
 
+
 export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {},

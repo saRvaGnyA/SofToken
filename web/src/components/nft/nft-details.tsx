@@ -15,12 +15,15 @@ import { nftData } from '@/data/static/single-nft';
 import NftDropDown from './nft-dropdown';
 import Avatar from '@/components/ui/avatar';
 import { WalletContext } from '@/lib/hooks/use-connect';
-import { Contract, ethers } from 'ethers';
+import { BigNumber, Contract, ethers } from 'ethers';
 import * as PushAPI from '@pushprotocol/restapi';
 import Web3Modal from 'web3modal';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { CONTRACT_ADDRESS, ABI } from '@/constants';
+import { useContractWrite, useContractRead } from '@thirdweb-dev/react';
+import { ThirdwebSDK } from '@thirdweb-dev/sdk';
+import { parseInt } from 'lodash';
 
 interface NftFooterProps {
   className?: string;
@@ -70,7 +73,7 @@ function NftFooter({
     // const res = await tokensContract.subscribe(token_id, cost_of_nft);
     // console.log(res);
     //Request to admin
-    
+
     const user = await PushAPI.user.get({
       account: `eip155:${address}`,
     });
@@ -94,6 +97,67 @@ function NftFooter({
 
     router.push({ pathname: '/profile' });
   };
+  const query = router.query;
+
+  const [tokenId, setTokenId] = useState(0);
+  const [contract, setContract] = useState(null);
+  const [rate, setRate] = useState(0);
+  const [tokenId0, setTokenId0] = useState(0);
+  const [rate0, setRate0] = useState(0);
+  const [curr_price, setcurr_price] = useState(price)
+  const { mutateAsync: vote, isLoading1 } = useContractWrite(contract, 'vote');
+  const { mutateAsync: getRate, isLoading2 } = useContractWrite(
+    contract,
+    'getRate'
+  );
+  const [walletConnected, setWalletConnected] = useState(false);
+
+  const call = async () => {
+    try {
+      const data = await vote([tokenId, rate]);
+      console.info('contract call successs', data);
+    } catch (err) {
+      console.error('contract call failure', err);
+    }
+  };
+  const getRateFunction = async (tok) => {
+    console.log('Started');
+    console.log(tok);
+    try {
+      const data = await getRate([tok]);
+      console.log(data);
+      setRate0(parseInt(data['_hex'], 16));
+      console.info('contract call successs', parseInt(data['_hex'], 16));
+      setcurr_price(parseFloat(price) * (1 + parseInt(data['_hex'], 16) / 1000))
+      console.log(curr_price)
+    } catch (err) {
+      console.error('contract call failure', err);
+    }
+  };
+  const initialLoad = async () => {
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+
+    const sdk = ThirdwebSDK.fromSigner(signer);
+
+    const contract = await sdk.getContract(
+      '0x9d7B3B7F55743bBA41cc4Cc21d7D1660e43411e1'
+    );
+    console.log(contract);
+    setContract(contract);
+    setWalletConnected(true);
+    var num = parseInt(query);
+    setTokenId(num);
+    getRateFunction(num);
+    
+  };
+
+  useEffect(() => {
+    initialLoad();
+    
+  }, [query,curr_price]);
+
   return (
     <div
       className={cn(
@@ -101,6 +165,7 @@ function NftFooter({
         className
       )}
     >
+      {/* <Button onClick={getRateFunction}>Testing</Button> */}
       <div className="-mx-4 border-t-2 border-gray-900 px-4 pt-4 pb-5 dark:border-gray-700 sm:-mx-6 sm:px-6 md:mx-2 md:px-0 md:pt-5 lg:pt-6 lg:pb-7">
         <div className="flex gap-4 pb-3.5 md:pb-4 xl:gap-5">
           <div className="block w-1/2 shrink-0 md:w-2/5">
@@ -108,14 +173,14 @@ function NftFooter({
               Current Price
             </h3>
             <div className="text-lg font-medium -tracking-wider md:text-xl xl:text-2xl">
-              {price} ETH
+              {curr_price} ETH
             </div>
           </div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <Button shape="rounded" onClick={subscribeNFT}>
-            {`BUY FOR ${price} ETH`}
+            {`BUY FOR ${curr_price} ETH`}
           </Button>
           <Button
             shape="rounded"

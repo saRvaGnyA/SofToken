@@ -18,6 +18,7 @@ import 'swiper/css';
 import '@/assets/css/scrollbar.css';
 import '@/assets/css/globals.css';
 import '@/assets/css/range-slider.css';
+import { ThirdwebProvider } from '@thirdweb-dev/react';
 
 type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
@@ -46,7 +47,9 @@ function CustomApp({ Component, pageProps }: AppPropsWithLayout) {
           >
             <PolybaseProvider polybase={polybase}>
               <WalletProvider>
-                {getLayout(<Component {...pageProps} />)}
+                <ThirdwebProvider activeChain="goerli">
+                  {getLayout(<Component {...pageProps} />)}
+                </ThirdwebProvider>
                 <SettingsButton />
                 <SettingsDrawer />
                 <ModalsContainer />

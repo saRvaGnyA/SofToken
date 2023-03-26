@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import type { NextPageWithLayout } from '@/types';
 import { NextSeo } from 'next-seo';
 import { motion } from 'framer-motion';
@@ -25,6 +25,7 @@ import routes from '@/config/routes';
 import Chatlist from '@/components/chat/list';
 import { WalletContext } from '@/lib/hooks/use-connect';
 import { GrpsData } from '@/data/static/grps-data';
+import { polybase } from '@/data/utils/polybase';
 // import { providers, Contract } from "ethers";
 
 const sort = [
@@ -353,13 +354,13 @@ const ChatPage: NextPageWithLayout = () => {
     const response4 = await PushAPI.chat.approve({
       status: 'Approved',
       account: `0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f`,
-      senderAddress : `${response2.chatId}` // receiver's address or chatId of a group
-    })
+      senderAddress: `${response2.chatId}`, // receiver's address or chatId of a group
+    });
     const response5 = await PushAPI.chat.approve({
       status: 'Approved',
       account: `0xC7cc983FCD339B1020a48D6f473a5DE663461148`,
-      senderAddress : `${response2.chatId}` // receiver's address or chatId of a group
-    })
+      senderAddress: `${response2.chatId}`, // receiver's address or chatId of a group
+    });
 
     console.log(response4);
     console.log(response5);
@@ -458,6 +459,13 @@ const ChatPage: NextPageWithLayout = () => {
     });
     console.log(notifications);
   };
+  const searchUsers = async () => {
+    const NFTref = polybase.collection('NFT');
+  };
+  useEffect(() => {
+    searchUsers();
+  }, []);
+
   return (
     <>
       <NextSeo
@@ -555,69 +563,70 @@ const ChatPage: NextPageWithLayout = () => {
           </span>
         </div> */}
 
-        {listOfMsgs.map((farm) => {
-          const query = farm;
+        {listOfMsgs &&
+          listOfMsgs.map((farm) => {
+            const query = farm;
 
-          return (
-            <Chatlist
-              key={farm.id}
-              from={farm.from}
-              to={farm.to}
-              earned={farm.name}
-              apr={farm.apr}
-              liquidity={farm.liquidity}
-              multiplier={farm.multiplier}
-            >
-              <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6">
-                <div className="text-xs font-medium uppercase text-black ltr:text-right rtl:text-left dark:text-white sm:text-sm">
-                  Wallet balance: 0
-                </div>
-                <div className="flex flex-col gap-3 text-xs font-medium uppercase text-black ltr:text-right rtl:text-left dark:text-white sm:text-sm">
-                  <span>Your Staked: 4.208 (0.03% of pool)</span>
-                  <span>0.08 WBTC + 1753.60 ETH ($18.96)</span>
-                </div>
-                <div className="relative">
-                  <input
-                    type="number"
-                    placeholder="0.0"
-                    className="spin-button-hidden h-13 w-full appearance-none rounded-lg border-solid border-gray-200 bg-body px-4 text-sm tracking-tighter text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:shadow-none focus:outline-none focus:ring-0 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-600"
-                  />
-                  <span className="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-lg border border-solid bg-gray-100 px-2 py-1 text-xs uppercase text-gray-900 ltr:right-3 rtl:left-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-                    Max
-                  </span>
-                </div>
-                <div className="relative">
-                  <input
-                    type="number"
-                    placeholder="0.0"
-                    className="spin-button-hidden h-13 w-full appearance-none rounded-lg border-solid border-gray-200 bg-body px-4 text-sm tracking-tighter text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:shadow-none focus:outline-none focus:ring-0 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-600"
-                  />
-                  <span className="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-lg border border-solid bg-gray-100 px-2 py-1 text-xs uppercase text-gray-900 ltr:right-3 rtl:left-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
-                    Max
-                  </span>
-                </div>
-              </div>
-              <div className="mb-4 grid grid-cols-2 gap-4 sm:mb-6 sm:gap-6">
-                <Button shape="rounded" fullWidth size="large">
-                  STAKE
-                </Button>
-                <Button shape="rounded" fullWidth size="large">
-                  UNSTAKE
-                </Button>
-              </div>
-              <Button
-                shape="rounded"
-                fullWidth
-                size="large"
-                onClick={() => {
-                  router.push({ pathname: '/chatDm', query: query });
-                }}
+            return (
+              <Chatlist
+                key={farm.id}
+                from={farm.from}
+                to={farm.to}
+                earned={farm.name}
+                apr={farm.apr}
+                liquidity={farm.liquidity}
+                multiplier={farm.multiplier}
               >
-                Chat
-              </Button>
-            </Chatlist>
-          );
-        })}
+                <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-6">
+                  <div className="text-xs font-medium uppercase text-black ltr:text-right rtl:text-left dark:text-white sm:text-sm">
+                    Wallet balance: 0
+                  </div>
+                  <div className="flex flex-col gap-3 text-xs font-medium uppercase text-black ltr:text-right rtl:text-left dark:text-white sm:text-sm">
+                    <span>Your Staked: 4.208 (0.03% of pool)</span>
+                    <span>0.08 WBTC + 1753.60 ETH ($18.96)</span>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      placeholder="0.0"
+                      className="spin-button-hidden h-13 w-full appearance-none rounded-lg border-solid border-gray-200 bg-body px-4 text-sm tracking-tighter text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:shadow-none focus:outline-none focus:ring-0 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-600"
+                    />
+                    <span className="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-lg border border-solid bg-gray-100 px-2 py-1 text-xs uppercase text-gray-900 ltr:right-3 rtl:left-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                      Max
+                    </span>
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="number"
+                      placeholder="0.0"
+                      className="spin-button-hidden h-13 w-full appearance-none rounded-lg border-solid border-gray-200 bg-body px-4 text-sm tracking-tighter text-gray-900 placeholder:text-gray-600 focus:border-gray-900 focus:shadow-none focus:outline-none focus:ring-0 dark:border-gray-700 dark:bg-gray-900 dark:text-white dark:placeholder:text-gray-500 dark:focus:border-gray-600"
+                    />
+                    <span className="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-lg border border-solid bg-gray-100 px-2 py-1 text-xs uppercase text-gray-900 ltr:right-3 rtl:left-3 dark:border-gray-700 dark:bg-gray-800 dark:text-white">
+                      Max
+                    </span>
+                  </div>
+                </div>
+                <div className="mb-4 grid grid-cols-2 gap-4 sm:mb-6 sm:gap-6">
+                  <Button shape="rounded" fullWidth size="large">
+                    STAKE
+                  </Button>
+                  <Button shape="rounded" fullWidth size="large">
+                    UNSTAKE
+                  </Button>
+                </div>
+                <Button
+                  shape="rounded"
+                  fullWidth
+                  size="large"
+                  onClick={() => {
+                    router.push({ pathname: '/chatDm', query: query });
+                  }}
+                >
+                  Chat
+                </Button>
+              </Chatlist>
+            );
+          })}
       </div>
     </>
   );

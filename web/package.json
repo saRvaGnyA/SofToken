@@ -9,14 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/core": "10.1.1",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
     "@headlessui/react": "1.6.5",
     "@hookform/resolvers": "2.9.1",
+    "@mui/material": "^5.11.14",
     "@polybase/auth": "^0.3.37",
     "@polybase/client": "^0.3.37",
     "@polybase/react": "^0.3.37",
     "@pushprotocol/restapi": "^0.8.2",
     "@tailwindcss/forms": "0.5.2",
     "@tailwindcss/typography": "0.5.0",
+    "@thirdweb-dev/react": "^3.10.3",
+    "@thirdweb-dev/sdk": "^3.10.3",
     "@web3-react/core": "^6.1.9",
     "axios": "0.24.0",
     "classnames": "2.3.1",
@@ -48,7 +54,6 @@
     "recharts": "2.1.9",
     "swiper": "8.2.2",
     "uuid": "8.3.2",
-    "wagmi": "^0.12.3",
     "web3.storage": "^4.5.4",
     "web3modal": "1.9.6",
     "yup": "0.32.11"
