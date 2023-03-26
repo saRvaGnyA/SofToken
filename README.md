@@ -61,12 +61,13 @@ SofToken is a blockchain-based application that allows users to Mint a NFT for t
     - Push Chat for 1-1 and Group Chat
     - Push Notifications
 - Chainlink - Implementing Aggregator function off the chain
-- IPFS - Storing ZIP files of software.
+- IPFS - Storing ZIP files of software, User Profile, Cover Images.
 
 ## 🔍 Future Scope
 - Implement TheGraph for fetching the live rates of the NFT's.
 - Mobile Application for chart demographics.
 - Categorizing NFT softwares into different domains.
+- Integrate Push Notifs with TheGraph subgraph
 
 
 ## 👩‍💻 Team members
