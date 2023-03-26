@@ -2,8 +2,8 @@
 
 ![Cream and Pink Classic Circular Fashion Fashion Logo](https://user-images.githubusercontent.com/24823649/227786509-61cd808d-2667-4637-a737-64efe207e711.png)
 
-## Secure & Efficient solution for Open Source Software Licenses.
-SofToken is a blockchain-based application that allows users to Mint a NFT for their software. Other users have a option to subscribe to the minted NFT and use it to build their own software. Different types of restrictions can be applied to the usage of a software before it is minted.
+## Secure & Efficient solution for Software Licensing and Royalty using NFTs
+SofToken is a blockchain-based application that allows users to Mint a NFT for their software and apply a license on it. Other users have a option to subscribe to the minted NFT and use it to build their own software. Different types of restrictions can be applied to the usage of a software before it is minted.
 
 [Demo Video](https://youtu.be/Y7W1sl1kC9A)
 
