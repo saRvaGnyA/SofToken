@@ -24,44 +24,6 @@ import { UsersIcon } from '@/components/icons/users';
 
 export const menuItems = [
   {
-    name: 'Home',
-    icon: <HomeIcon />,
-    href: routes.home,
-    dropdownItems: [
-      {
-        name: 'Modern',
-        href: routes.home,
-      },
-      {
-        name: 'Minimal',
-        href: routes.minimal,
-      },
-      {
-        name: 'Retro',
-        href: routes.retro,
-      },
-      {
-        name: 'Classic',
-        href: routes.classic,
-      },
-    ],
-  },
-  {
-    name: 'Farm',
-    icon: <FarmIcon />,
-    href: routes.farms,
-  },
-  {
-    name: 'Swap',
-    icon: <ExchangeIcon />,
-    href: routes.swap,
-  },
-  {
-    name: 'Liquidity',
-    icon: <PoolIcon />,
-    href: routes.liquidity,
-  },
-  {
     name: 'Explore NFTs',
     icon: <CompassIcon />,
     href: routes.search,
@@ -86,25 +48,6 @@ export const menuItems = [
     icon: <UsersIcon />,
     href: routes.users,
   },
-  {
-    name: 'Vote',
-    icon: <VoteIcon />,
-    href: routes.vote,
-    dropdownItems: [
-      {
-        name: 'Explore',
-        href: routes.vote,
-      },
-      {
-        name: 'Vote with pools',
-        href: routes.proposals,
-      },
-      {
-        name: 'Create proposal',
-        href: routes.createProposal,
-      },
-    ],
-  },
 ];
 
 type SidebarProps = {
@@ -121,7 +64,7 @@ export default function Sidebar({ className }: SidebarProps) {
       )}
     >
       <div className="relative flex h-24 items-center justify-between overflow-hidden px-6 py-4 2xl:px-8">
-        <Logo />
+        SofToken
         <div className="md:hidden">
           <Button
             title="Close"
@@ -138,12 +81,6 @@ export default function Sidebar({ className }: SidebarProps) {
 
       <Scrollbar style={{ height: 'calc(100% - 96px)' }}>
         <div className="px-6 pb-5 2xl:px-8">
-          <AuthorCard
-            image={AuthorImage}
-            name="Cameron Williamson"
-            role="admin"
-          />
-
           <div className="mt-12">
             {menuItems.map((item, index) => (
               <MenuItem
