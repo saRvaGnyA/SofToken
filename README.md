@@ -9,7 +9,8 @@ SofToken is a blockchain-based application that allows users to Mint a NFT for t
 ## ⚒️ Working of SofToken
 
 
-![image](https://user-images.githubusercontent.com/90528630/227760576-8d4c072e-28e3-4e31-86de-4bb7329d6cdf.png)
+![image](https://user-images.githubusercontent.com/90528630/227774600-76e0ca14-1cc6-4e79-a5ae-be979421c0e6.png)
+
 
 - User creates his/her profile. The details are stored on IPFS & Polybase.
 - User can Follow other people.
@@ -35,7 +36,7 @@ SofToken is a blockchain-based application that allows users to Mint a NFT for t
 - User can give his own rating to the software.
 - Live Price of the NFT is determined by the Ratings it gets.
     - The rating is passed through Aggregator function which calculates the price of the NFT off the chain. (No gas consumed)
-- User can subscribe to the NFT software.
+- User can subscribe to the NFT software. After subscription, user can download ZIP files for the software.
 - Once subscribed user can :-
     - chat with the owner of the NFT software.
     - Group chat with other subscribers to the same NFT software.
@@ -45,36 +46,47 @@ SofToken is a blockchain-based application that allows users to Mint a NFT for t
 
 ## ✨Features
 - Live Chart Demographics of top NFT softwares.
-- Dymanic Price changes in NFT based on Ratings
+- Dymanic Price changes in NFT based on Ratings.
 - Mint NFT in 3 ways.
 - Live 1-1 and Group chat with people.
 - IPFS and Polybase Storage.
 - Filter NFT's based on needs
 - Notification sent to users.
+- Download ZIP file of software.
 
 ## ⚙️ Tech Stack
 - NextJS - Frontend
 - Solidity - Smart Contract
 - Scroll - Deployment of Contract.
+- Polygon zkEVM - Deployment of Contract.
 - Polybase - Storing User and NFT details.
 - Push Protocol 
-    - Push Chat for 1-1 and Group Chat
+    - Push Chat for 1-1 Chat
+    - Push Group Chat
     - Push Notifications
-- Chainlink - Implementing Aggregator function off the chain
+- Chainlink - Implementing Aggregator function off the chain.
 - IPFS - Storing ZIP files of software, User Profile, Cover Images.
+- ThirdWeb
 
-## 🗒️ Smart Contract
+
+Smart Contract: `SofToken.sol
+`
 Deployment Network - Scroll Alpha Testnet
+Contract Address: 0xC4644e673d974e59e373EdFe6A25038DcB47dA59
+BlockScout Scroll Alpha Testnet link: [Link](https://blockscout.scroll.io/address/0xC4644e673d974e59e373EdFe6A25038DcB47dA59)
 
+
+Smart Contract: `functionsConsumer.sol`
+
+Deployment Network: Polygon zkEVM
 Contract Address: 0x744b61418D77d4C4AA953cD36403D353F7Cd947e
-
-BlockScout Scroll Alpha Testnet link: [Link](https://blockscout.scroll.io/address/0x744b61418D77d4C4AA953cD36403D353F7Cd947e)
+Block explorer Ploygol zkEVM link:  [Link](https://testnet-zkevm.polygonscan.com/address/0x744b61418D77d4C4AA953cD36403D353F7Cd947e)
 
 ## 🔍 Future Scope
 - Implement TheGraph for fetching the live rates of the NFT's.
 - Mobile Application for chart demographics.
 - Categorizing NFT softwares into different domains.
-- Integrate Push Notifs with TheGraph subgraph
+- Integrate Push Notifications with TheGraph subgraph.
 
 
 ## 👩‍💻 Team members
