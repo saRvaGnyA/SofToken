@@ -1,0 +1,113 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.7;
+
+import "./dev/functions/FunctionsClient.sol";
+// import "@chainlink/contracts/src/v0.8/dev/functions/FunctionsClient.sol"; // Once published
+import "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
+
+/**
+ * @title Functions Consumer contract
+ * @notice This contract is a demonstration of using Functions.
+ * @notice NOT FOR PRODUCTION USE
+ */
+contract FunctionsConsumer is FunctionsClient, ConfirmedOwner {
+  using Functions for Functions.Request;
+
+  bytes32 public latestRequestId;
+  uint256 public latestResponse;
+  bytes public latestError;
+  mapping(uint256 => uint256) total_ratings_per_token;
+  mapping(uint256 => uint256) token_rates;
+  mapping(address => mapping(uint256 => uint256)) public voting_database;
+
+  event OCRResponse(bytes32 indexed requestId, bytes result, bytes err);
+
+  /**
+   * @notice Executes once when a contract is created to initialize state variables
+   *
+   * @param oracle - The FunctionsOracle contract
+   *
+   * Network: Mumbai
+   * Oracle: 0xeA6721aC65BCeD841B8ec3fc5fEdeA6141a0aDE4
+   *
+   */
+  constructor(address oracle) FunctionsClient(oracle) ConfirmedOwner(msg.sender) {}
+
+  /**
+   * @notice Send a simple request
+   *
+   * @param source JavaScript source code
+   * @param secrets Encrypted secrets payload
+   * @param args List of arguments accessible from within the source code
+   * @param subscriptionId Billing ID
+   */
+  function executeRequest(
+    string calldata source,
+    bytes calldata secrets,
+    Functions.Location secretsLocation,
+    string[] calldata args,
+    uint64 subscriptionId,
+    uint32 gasLimit
+  ) public onlyOwner returns (bytes32) {
+    Functions.Request memory req;
+    req.initializeRequest(Functions.Location.Inline, Functions.CodeLanguage.JavaScript, source);
+    if (secrets.length > 0) {
+      if (secretsLocation == Functions.Location.Inline) {
+        req.addInlineSecrets(secrets);
+      } else {
+        req.addRemoteSecrets(secrets);
+      }
+    }
+    if (args.length > 0) req.addArgs(args);
+
+    bytes32 assignedReqID = sendRequest(req, subscriptionId, gasLimit);
+    latestRequestId = assignedReqID;
+    return assignedReqID;
+  }
+
+  /**
+   * @notice Callback that is invoked once the DON has resolved the request or hit an error
+   *
+   * @param requestId The request ID, returned by sendRequest()
+   * @param response Aggregated response from the user code
+   * @param err Aggregated error from the user code or from the execution pipeline
+   * Either response or error parameter will be set, but never both
+   */
+  function fulfillRequest(bytes32 requestId, bytes memory response, bytes memory err) internal override {
+    latestResponse = abi.decode(response, (uint256));
+    latestError = err;
+    emit OCRResponse(requestId, response, err);
+  }
+
+  /**
+   * @notice Allows the Functions oracle address to be updated
+   *
+   * @param oracle New oracle address
+   */
+  function updateOracleAddress(address oracle) public onlyOwner {
+    setOracle(oracle);
+  }
+
+  event voteTo(uint256 token_id, uint256 rate);
+
+  function vote(uint256 token_id, uint256 rate) public {
+    emit voteTo(token_id, rate);
+    if (voting_database[msg.sender][token_id] != 0) {
+      return;
+    } else {
+      voting_database[msg.sender][token_id] = rate;
+      token_rates[token_id] =
+        ((token_rates[token_id] * total_ratings_per_token[token_id] + rate) * 100) /
+        (total_ratings_per_token[token_id] + 1);
+      total_ratings_per_token[token_id]++;
+    }
+  }
+
+  function checkIsRated(uint256 token_id) public view returns (bool) {
+    return voting_database[msg.sender][token_id] != 0;
+  }
+
+  function getRate(uint256 token_id) public view returns (uint256) {
+    return token_rates[token_id];
+  }
+}
