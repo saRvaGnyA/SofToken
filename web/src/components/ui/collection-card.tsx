@@ -2,21 +2,13 @@ import Image from '@/components/ui/image';
 import cn from 'classnames';
 import { StaticImageData } from 'next/image';
 import AnchorLink from '@/components/ui/links/anchor-link';
-import Avatar from '@/components/ui/avatar';
+import { useEffect, useState } from 'react';
 
 type ItemType = {
   id?: string | number;
   name: string;
-  slug: string;
-  title: string;
-  cover_image: StaticImageData;
-  image?: StaticImageData;
-  number_of_artwork: number;
-  user: {
-    avatar?: StaticImageData;
-    name: string;
-    slug: string;
-  };
+  clause_type: string;
+  description: string;
 };
 type CardProps = {
   item: ItemType;
@@ -24,8 +16,23 @@ type CardProps = {
 };
 
 export default function CollectionCard({ item, className = '' }: CardProps) {
-  const { name, slug, title, cover_image, image, number_of_artwork, user } =
-    item ?? {};
+  const { name, clause_type, description, id } = item ?? {};
+  const [image, setImage] = useState('');
+
+  const initialLoad = async () => {
+    const resImg = await fetch(
+      `https://bafybeihpjhkeuiq3k6nqa3fkgeigeri7iebtrsuyuey5y6vy36n345xmbi.ipfs.w3s.link/${id}`
+    );
+    const img = await resImg.json();
+    setImage(`https://w3s.link/ipfs/${img.image.slice(7)}`);
+  };
+
+  useEffect(() => {
+    if (id) {
+      initialLoad();
+    }
+  }, [id]);
+
   return (
     <div
       className={cn(
@@ -34,18 +41,11 @@ export default function CollectionCard({ item, className = '' }: CardProps) {
       )}
     >
       <div className="relative flex aspect-[8/11] w-full justify-center overflow-hidden rounded-lg">
-        <Image
-          src={cover_image}
-          placeholder="blur"
-          layout="fill"
-          quality={100}
-          objectFit="cover"
-          alt={name}
-        />
+        {image && <img src={image} alt={name} />}
       </div>
       <div className="absolute top-0 left-0 z-[5] flex h-full w-full flex-col justify-between bg-gradient-to-t from-black p-5 md:p-6">
         <AnchorLink
-          href={slug}
+          href={`/nft-details/${id}`}
           className="absolute top-0 left-0 z-10 h-full w-full"
         />
         <div className="flex justify-between gap-3">
@@ -53,35 +53,20 @@ export default function CollectionCard({ item, className = '' }: CardProps) {
             className="inline-flex h-8 shrink-0 items-center rounded-2xl bg-white/20 px-4 text-xs font-medium uppercase -tracking-wide text-white
           backdrop-blur-[40px]"
           >
-            {name}
+            {clause_type === 'prop'
+              ? 'Properiatary'
+              : clause_type === 'royalty'
+              ? 'Code with Royalty'
+              : 'Code without Royalty'}
           </div>
-          {image && <Avatar image={image} alt={name} shape="rounded" />}
         </div>
         <div className="block">
           <h2 className="mb-1.5 truncate text-lg font-medium -tracking-wider text-white">
-            {title}
+            {name}
           </h2>
           <div className="text-sm font-medium -tracking-wide text-[#B6AAA2]">
-            {number_of_artwork} Artworks
+            {description}
           </div>
-          <AnchorLink
-            href={user?.slug}
-            className="relative z-10 mt-3.5 inline-flex items-center rounded-3xl bg-white/20 p-2 backdrop-blur-[40px]"
-          >
-            <Avatar
-              //@ts-ignore
-              image={user?.avatar}
-              alt={user?.name}
-              size="xs"
-              width={24}
-              height={24}
-              className="rounded-full"
-            />
-
-            <div className="truncate text-sm -tracking-wide text-white ltr:ml-2 ltr:pr-2 rtl:mr-2 rtl:pl-2">
-              @{user?.name}
-            </div>
-          </AnchorLink>
         </div>
       </div>
     </div>

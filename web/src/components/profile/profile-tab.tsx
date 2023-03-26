@@ -13,11 +13,20 @@ import {
 } from '@/data/static/author-profile';
 import { polybase } from '@/data/utils/polybase';
 
-export default function ProfileTab({ followersList, followingList }) {
+export default function ProfileTab({
+  followersList,
+  followingList,
+  userRecord,
+  profileImage,
+  user,
+}) {
   const collectionReference = polybase.collection('User');
-  
+  const NFTCollectionReference = polybase.collection('NFT');
+
   const [followerDetails, setFollowerDetails] = useState([]);
   const [followingDetails, setFollowingDetails] = useState([]);
+  const [nftsCollection, setNftsCollection] = useState([]);
+  const [portfolio, setPortfolio] = useState([]);
 
   const getDetails = async () => {
     const followers = await followersList.map(async ({ data }) => {
@@ -50,9 +59,34 @@ export default function ProfileTab({ followersList, followingList }) {
     setFollowingDetails(followingFinal);
   };
 
+  const getNFTCollectionDetails = async () => {
+    const nfts = await NFTCollectionReference.where(
+      'minter',
+      '==',
+      user.id
+    ).get();
+    console.log(nfts);
+    setNftsCollection(nfts.data);
+  };
+
+  const getPortfolioCollectionDetails = async () => {
+    if (user.nfts) {
+      const nfts = user.nfts.map(async (nft) => {
+        const nftRecord = await NFTCollectionReference.record(nft).get();
+        return nftRecord.data;
+      });
+      const portfolioNFTs = await Promise.all(nfts);
+      setPortfolio(portfolioNFTs);
+    }
+  };
+
   useEffect(() => {
-    getDetails();
-  }, [followersList, followingList]);
+    if (user) {
+      getDetails();
+      getNFTCollectionDetails();
+      getPortfolioCollectionDetails();
+    }
+  }, [followersList, followingList, user]);
 
   return (
     <ParamTab
@@ -66,10 +100,6 @@ export default function ProfileTab({ followersList, followingList }) {
           path: 'portfolio',
         },
         {
-          title: 'History',
-          path: 'history',
-        },
-        {
           title: 'Followers',
           path: 'followers',
         },
@@ -81,44 +111,16 @@ export default function ProfileTab({ followersList, followingList }) {
     >
       <TabPanel className="focus:outline-none">
         <div className="grid gap-4 xs:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 lg:gap-5 xl:gap-6 3xl:grid-cols-3 4xl:grid-cols-4">
-          {collections?.map((collection) => (
-            <CollectionCard item={collection} key={collection?.id} />
+          {nftsCollection?.map((collection) => (
+            <CollectionCard item={collection.data} key={collection?.data.id} />
           ))}
         </div>
       </TabPanel>
       <TabPanel className="focus:outline-none">
-        <div className="space-y-8 md:space-y-10 xl:space-y-12">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4">
-            {authorWallets?.map((wallet) => (
-              <ListCard item={wallet} key={wallet?.id} variant="medium" />
-            ))}
-          </div>
-          <div className="block">
-            <h3 className="text-heading-style mb-3 uppercase text-gray-900 dark:text-white">
-              Protocols
-            </h3>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
-              {authorProtocols?.map((protocol) => (
-                <ListCard item={protocol} key={protocol?.id} variant="large" />
-              ))}
-            </div>
-          </div>
-          <div className="block">
-            <h3 className="text-heading-style mb-3 uppercase text-gray-900 dark:text-white">
-              Networks
-            </h3>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-2 2xl:grid-cols-3 3xl:grid-cols-4">
-              {authorNetworks?.map((network) => (
-                <ListCard item={network} key={network?.id} variant="medium" />
-              ))}
-            </div>
-          </div>
-        </div>
-      </TabPanel>
-      <TabPanel className="focus:outline-none">
-        <div className="space-y-8 xl:space-y-9">
-          <TransactionSearchForm />
-          <TransactionHistory />
+        <div className="grid gap-4 xs:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 lg:gap-5 xl:gap-6 3xl:grid-cols-3 4xl:grid-cols-4">
+          {portfolio?.map((collection) => (
+            <CollectionCard item={collection.data} key={collection?.data.id} />
+          ))}
         </div>
       </TabPanel>
       <TabPanel className="focus:outline-none">

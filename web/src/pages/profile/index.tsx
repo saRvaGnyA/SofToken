@@ -125,7 +125,8 @@ const AuthorProfilePage: NextPageWithLayout<
       } else if (isProfileComplete && username !== recordGlobal.username) {
         initialLoadById();
       }
-    }profileImage
+    }
+    profileImage;
   }, [isProfileComplete, username]);
 
   const handleCopyToClipboard = () => {
@@ -300,6 +301,7 @@ const AuthorProfilePage: NextPageWithLayout<
             <ProfileTab
               followersList={followersList}
               followingList={followingList}
+              user={recordGlobal}
             />
           </div>
           <AuthorInformation

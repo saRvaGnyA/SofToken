@@ -189,19 +189,21 @@ const CreateNFTPage: NextPageWithLayout = () => {
     await mint_Res.wait(1);
 
     const token_id = (await tokensContract.getTotalTokens()) - 1;
-    
+
     try {
       await provider.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: 5}],
+        params: [{ chainId: 5 }],
       });
-    console.log("You have succefully switched to Binance Test network")
+      console.log('You have succefully switched to Binance Test network');
     } catch (switchError) {
       // This error code indicates that the chain has not been added to MetaMask.
       if (switchError.code === 4902) {
-       console.log("This network is not available in your metamask, please add it")
+        console.log(
+          'This network is not available in your metamask, please add it'
+        );
       }
-      console.log("Failed to switch to the network")
+      console.log('Failed to switch to the network');
     }
 
     //create group of corrs NFT
@@ -213,21 +215,8 @@ const CreateNFTPage: NextPageWithLayout = () => {
       encryptedPGPPrivateKey: user.encryptedPrivateKey,
       signer: signer,
     });
-    
-    const response = await PushAPI.chat.createGroup({
-      account: `${address}`, //address of user
-      groupName: name,
-      groupDescription: 'This is the oficial group for Push Protocol',
-      members: ['0xC7cc983FCD339B1020a48D6f473a5DE663461148'],
-      groupImage:'https://plus.unsplash.com/premium_photo-1675873627492-49be1504998c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80',
-      admins: ['0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f'],
-      isPublic: true,
-      pgpPrivateKey: pgpDecryptedPvtKey, //decrypted private key
-    });
-    console.log(response);
 
     //store token id and nft details on polybase
-
 
     await collectionReference.create([
       token_id.toString(),
@@ -239,6 +228,19 @@ const CreateNFTPage: NextPageWithLayout = () => {
       [],
       await userCollectionReference.record(address),
     ]);
+
+    const response = await PushAPI.chat.createGroup({
+      account: `${address}`, //address of user
+      groupName: name,
+      groupDescription: 'This is the oficial group for Push Protocol',
+      members: ['0xC7cc983FCD339B1020a48D6f473a5DE663461148'],
+      groupImage:
+        'https://plus.unsplash.com/premium_photo-1675873627492-49be1504998c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80',
+      admins: ['0xCc673eE49Eb916b33919294D39F0518FdC0DaF0f'],
+      isPublic: true,
+      pgpPrivateKey: pgpDecryptedPvtKey, //decrypted private key
+    });
+    console.log(response);
 
     Router.push('/profile');
   };
