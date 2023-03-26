@@ -64,7 +64,7 @@ SofToken is a blockchain-based application that allows users to Mint a NFT for t
     - Push Chat for 1-1 Chat
     - Push Group Chat
     - Push Notifications
-- Chainlink Functions - Implementing Aggregator function off the chain
+- [Chainlink Functions](https://github.com/Jigsaw-23122002/Chainlink-Functions-for-ETH-Scaling) - Implementing Aggregator function off the chain
 - IPFS - Storing ZIP files of software, User Profile, Cover Images.
 - ThirdWeb
 
