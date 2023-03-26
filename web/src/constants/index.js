@@ -1,4 +1,4 @@
-export const CONTRACT_ADDRESS = '0x10D17398bbDdf3b241dA917df9C7C154Cb324540';
+export const CONTRACT_ADDRESS = '0xa79a7c421F8269E94CE0ce70CA0777418F331B96';
 export const ABI = [
   {
     "inputs": [],
@@ -506,6 +506,25 @@ export const ABI = [
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tok_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "getCID",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "getCreatedTokensIds",
     "outputs": [
@@ -627,6 +646,25 @@ export const ABI = [
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "token_to_cid",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",

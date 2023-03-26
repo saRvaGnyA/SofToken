@@ -195,7 +195,7 @@ function NftFooter({
       signer: signer,
     });
     // console.log(curr_msg);
-    
+
     // actual api
     var admin_addr = '0x4A9CF09B996F0Ddf5498201f1D6cb8f6C88e3e0e'; // minter address fetched from polybase
     const response = await PushAPI.chat.send({
@@ -206,6 +206,57 @@ function NftFooter({
       pgpPrivateKey: pgpDecryptedPvtKey,
     });
     console.log(response);
+
+    const cidReq = await tokensContract.getCID(tok_id);
+    console.log(cidReq)
+
+
+    
+
+    // router.push({ pathname: '/profile' });
+  };
+  const downloadNft = async()=>{
+    const connection = web3Modal && (await web3Modal.connect());
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const tokensContract = new Contract(CONTRACT_ADDRESS, ABI, signer);
+    //fetch token id  and curr cost of nft from polybase
+    const token_id = parseInt(tok_id);
+    
+    //Request to admin
+
+  
+    const cidReq = await tokensContract.getCID(2);
+    console.log(cidReq)
+    fetch(`https://ipfs.io/ipfs/${cidReq}/`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/pdf',
+    },
+  })
+  .then((response) => response.blob())
+  .then((blob) => {
+    // Create blob link to download
+    const url = window.URL.createObjectURL(
+      new Blob([blob]),
+    );
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute(
+      'download',
+      `FileName.pdf`,
+    );
+
+    // Append to html link element page
+    document.body.appendChild(link);
+
+    // Start download
+    link.click();
+
+    // Clean up and remove the link
+    link.parentNode.removeChild(link);
+  });
+
     
 
     // router.push({ pathname: '/profile' });
@@ -224,6 +275,7 @@ function NftFooter({
       )}
     >
       <Button onClick={getRateFunction}>Testing</Button>
+      <Button onClick={downloadNft}>Dwnld</Button>
       <Button onClick={async()=>{
         await call()
       }}>Rate</Button>
