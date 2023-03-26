@@ -69,17 +69,22 @@ SofToken is a blockchain-based application that allows users to Mint a NFT for t
 - ThirdWeb
 
 
+## 🗒️Smart Contracts
 Smart Contract: `SofToken.sol
 `
 Deployment Network - Scroll Alpha Testnet
+
 Contract Address: 0xC4644e673d974e59e373EdFe6A25038DcB47dA59
+
 BlockScout Scroll Alpha Testnet link: [Link](https://blockscout.scroll.io/address/0xC4644e673d974e59e373EdFe6A25038DcB47dA59)
 
 
 Smart Contract: `functionsConsumer.sol`
 
 Deployment Network: Polygon zkEVM
+
 Contract Address: 0x744b61418D77d4C4AA953cD36403D353F7Cd947e
+
 Block explorer Ploygol zkEVM link:  [Link](https://testnet-zkevm.polygonscan.com/address/0x744b61418D77d4C4AA953cD36403D353F7Cd947e)
 
 ## 🔍 Future Scope
