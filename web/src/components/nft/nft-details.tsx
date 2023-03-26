@@ -19,11 +19,12 @@ import { BigNumber, Contract, ethers } from 'ethers';
 import * as PushAPI from '@pushprotocol/restapi';
 import Web3Modal from 'web3modal';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { CONTRACT_ADDRESS, ABI } from '@/constants';
 import { useContractWrite, useContractRead } from '@thirdweb-dev/react';
 import { ThirdwebSDK } from '@thirdweb-dev/sdk';
 import { parseInt } from 'lodash';
+import Slider from 'rc-slider';
 
 interface NftFooterProps {
   className?: string;
@@ -111,10 +112,10 @@ function NftFooter({
     'getRate'
   );
   const [walletConnected, setWalletConnected] = useState(false);
-
+  var rate_NFT = 0
   const call = async () => {
     try {
-      const data = await vote([tokenId, rate]);
+      const data = await vote([1, rate_NFT]);
       console.info('contract call successs', data);
     } catch (err) {
       console.error('contract call failure', err);
@@ -124,16 +125,69 @@ function NftFooter({
     console.log('Started');
     console.log(tok);
     try {
-      const data = await getRate([tok]);
-      console.log(data);
+      const data = await getRate([1]);
+      console.log(data.toString());
       setRate0(parseInt(data['_hex'], 16));
       console.info('contract call successs', parseInt(data['_hex'], 16));
-      setcurr_price(parseFloat(price) * (1 + parseInt(data['_hex'], 16) / 1000))
+      setcurr_price(parseFloat(price) * (1 + (parseFloat(data.toString()) / 1000)))
       console.log(curr_price)
     } catch (err) {
       console.error('contract call failure', err);
     }
   };
+  function PriceRange() {
+    let [range, setRange] = useState({ min: 1, max: 10 });
+    function handleRangeChange(value: any) {
+      setRange({
+        min: value[0],
+        max: value[1],
+      });
+      rate_NFT = value[0]
+      console.log(`rate is:${rate_NFT}`)
+    }
+  
+    function handleMinChange(min: number) {
+      setRange({
+        ...range,
+        min: min || 0,
+      });
+    }
+
+    return (
+      <div className="p-5">
+        <div className="mb-4 grid grid-cols-2 gap-2">
+          <input
+            className="h-9 rounded-lg border-gray-200 text-sm text-gray-900 outline-none focus:border-gray-900 focus:outline-none focus:ring-0 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-gray-500"
+            type="number"
+            value={range.min}
+            step={0.01}
+            onChange={(e) => handleMinChange(parseInt(e.target.value))}
+            min="0"
+            max={range.max}
+          />
+          {/* <input
+            className="h-9 rounded-lg border-gray-200 text-sm text-gray-900 outline-none focus:border-gray-900 focus:outline-none focus:ring-0 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:focus:border-gray-500"
+            type="number"
+            value={range.max}
+            step={0.01}
+            onChange={(e) => handleMaxChange(parseInt(e.target.value))}
+            // onBlur={setprice_range(range)}
+            min={range.min}
+          /> */}
+        </div>
+        <Slider
+          range
+          min={1}
+          max={10}
+          value={[range.min, 10]}
+          allowCross={false}
+          step={1}
+          onChange={(value) => handleRangeChange(value)}
+          // onBlur={setprice_range(range)}
+        />
+      </div>
+    );
+  }
   const initialLoad = async () => {
     const connection = web3Modal && (await web3Modal.connect());
     const provider = new ethers.providers.Web3Provider(connection);
@@ -165,7 +219,11 @@ function NftFooter({
         className
       )}
     >
-      {/* <Button onClick={getRateFunction}>Testing</Button> */}
+      <Button onClick={getRateFunction}>Testing</Button>
+      <Button onClick={async()=>{
+        await call()
+      }}>Rate</Button>
+      <PriceRange/>
       <div className="-mx-4 border-t-2 border-gray-900 px-4 pt-4 pb-5 dark:border-gray-700 sm:-mx-6 sm:px-6 md:mx-2 md:px-0 md:pt-5 lg:pt-6 lg:pb-7">
         <div className="flex gap-4 pb-3.5 md:pb-4 xl:gap-5">
           <div className="block w-1/2 shrink-0 md:w-2/5">
