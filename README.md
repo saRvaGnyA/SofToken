@@ -63,6 +63,13 @@ SofToken is a blockchain-based application that allows users to Mint a NFT for t
 - Chainlink - Implementing Aggregator function off the chain
 - IPFS - Storing ZIP files of software, User Profile, Cover Images.
 
+## 🗒️ Smart Contract
+Deployment Network - Scroll Alpha Testnet
+
+Contract Address: 0x744b61418D77d4C4AA953cD36403D353F7Cd947e
+
+BlockScout Scroll Alpha Testnet link: [Link](https://blockscout.scroll.io/address/0x744b61418D77d4C4AA953cD36403D353F7Cd947e)
+
 ## 🔍 Future Scope
 - Implement TheGraph for fetching the live rates of the NFT's.
 - Mobile Application for chart demographics.

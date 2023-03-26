@@ -52,6 +52,7 @@ const AuthorProfilePage: NextPageWithLayout<
   const [isFollows, setIsFollows] = useState(false);
   const [followersList, setFollowersList] = useState([]);
   const [followingList, setFollowingList] = useState([]);
+  const [collectionRecord, setCollectionRecord] = useState({});
 
   function makeStorageClient() {
     return new Web3Storage({ token: process.env.NEXT_PUBLIC_FILECOIN_API_KEY });
@@ -98,10 +99,9 @@ const AuthorProfilePage: NextPageWithLayout<
   };
 
   const initialLoadById = async () => {
-    const records = await collectionReference
-      .where('username', '==', username)
-      .get();
-
+    const record = await collectionReference.where('username', '==', username);
+    setCollectionRecord(record);
+    const records = await record.get();
     setRecord(records.data[0].data);
     const client = makeStorageClient();
     const res = await client.get(records.data[0].data.profilePic);
@@ -351,10 +351,15 @@ const AuthorProfilePage: NextPageWithLayout<
           </div>
 
           <div className="grow pt-6 pb-9 md:-mt-2.5 md:pt-1.5 md:pb-0 md:ltr:pl-7 md:rtl:pr-7 lg:ltr:pl-10 lg:rtl:pr-10 xl:ltr:pl-14 xl:rtl:pr-14 3xl:ltr:pl-16 3xl:rtl:pr-16">
-            <ProfileTab
-              followersList={followersList}
-              followingList={followingList}
-            />
+            {collectionRecord && (
+              <ProfileTab
+                followersList={followersList}
+                followingList={followingList}
+                userRecord={collectionRecord}
+                profileImage={profileImage}
+                user={record}
+              />
+            )}
           </div>
           <AuthorInformation
             data={{

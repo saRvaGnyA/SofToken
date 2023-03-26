@@ -20,7 +20,7 @@ import * as PushAPI from '@pushprotocol/restapi';
 import Web3Modal from 'web3modal';
 import { useRouter } from 'next/router';
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { CONTRACT_ADDRESS, ABI } from '@/constants';
+import { CONTRACT_ADDRESS, ABI, DIFF_ABI } from '@/constants';
 import { useContractWrite, useContractRead } from '@thirdweb-dev/react';
 import { ThirdwebSDK } from '@thirdweb-dev/sdk';
 import { parseInt } from 'lodash';
@@ -47,7 +47,11 @@ function NftFooter({
   const { address, disconnectWallet, balance } = useContext(WalletContext);
   const web3Modal =
     typeof window !== 'undefined' && new Web3Modal({ cacheProvider: true });
+<<<<<<< HEAD
   const [isDone, setisDone] = useState(false);
+=======
+
+>>>>>>> 4181b0d74d187918c14a1a006daeb2b0a5d876a7
   const query = router.query;
 
   const [tokenId, setTokenId] = useState(0);
@@ -147,8 +151,9 @@ function NftFooter({
 
     const sdk = ThirdwebSDK.fromSigner(signer);
 
-    const contract = await sdk.getContract(
-      '0x9d7B3B7F55743bBA41cc4Cc21d7D1660e43411e1'
+    const contract = await sdk.getContractFromAbi(
+      '0x9d7B3B7F55743bBA41cc4Cc21d7D1660e43411e1',
+      DIFF_ABI
     );
     console.log(contract);
     setContract(contract);
